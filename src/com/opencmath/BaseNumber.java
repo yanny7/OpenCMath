@@ -12,38 +12,94 @@ public abstract class BaseNumber {
         this.type = type;
     }
 
+    /**
+     * Gets current type of number
+     * @return Current number type
+     * @see NumberType
+     */
     public NumberType getType() {
         return type;
     }
 
+    /**
+     * Gets INVALID number from pool
+     * @return INVALID number type
+     * @see NumberType
+     */
     public static BaseNumber getNaN() {
         return InvalidNumber.get();
     }
 
+    /**
+     * Gets INTEGER number from pool
+     * @param value New value
+     * @return INTEGER number with new value
+     * @see NumberType
+     */
     public static BaseNumber getInteger(long value) {
         return IntegerNumber.get(value);
     }
 
+    /**
+     * Gets REAL number from pool
+     * @param value New value
+     * @return REAL number with new value
+     * @see NumberType
+     */
     public static BaseNumber getReal(double value) {
         return RealNumber.get(value);
     }
 
+    /**
+     * Gets CONSTANT number from pool
+     * @param type New value
+     * @return CONSTANT number with new value
+     * @see NumberType
+     * @see ConstantNumber
+     */
     public static BaseNumber getConstant(ConstantType type) {
         return ConstantNumber.get(type);
     }
 
+    /**
+     * Gets COMPLEX number from pool
+     * @param re Real part of complex number
+     * @param im Imaginary part of complex number
+     * @return COMPLEX number with new value
+     * @see NumberType
+     */
     public static BaseNumber getComplex(double re, double im) {
         return ComplexNumber.get(re, im);
     }
 
+    /**
+     * Gets MATRIX number from pool, with empty items
+     * @param rows Number of rows
+     * @param cols Number of columns
+     * @return MATRIX number with defined size
+     * @see NumberType
+     */
     public static BaseNumber getMatrix(byte rows, byte cols) {
         return MatrixNumber.get(rows, cols);
     }
 
+    /**
+     * Gets MATRIX number from pool
+     * @param rows Number of rows
+     * @param cols Number of columns
+     * @param items Array of matrix items. All items are in 1D array
+     * @return MATRIX number with defined size and items
+     * @see NumberType
+     */
     public static BaseNumber getMatrix(byte rows, byte cols, BaseNumber[] items) {
         return MatrixNumber.get(rows, cols, items);
     }
 
+    /**
+     * Returns integer value as Long. Valid only for INTEGER type
+     * @return For INTEGER returns current value, otherwise Long.MIN_VALUE
+     * @see NumberType
+     */
     public long getInteger() {
         if (type == NumberType.INTEGER) {
             IntegerNumber integerNumber = (IntegerNumber) this;
@@ -53,6 +109,11 @@ public abstract class BaseNumber {
         }
     }
 
+    /**
+     * Returns constant value as ConstantType. Valid only for CONSTANT type
+     * @return For CONSTANT returns current value, otherwise null
+     * @see NumberType
+     */
     public ConstantType getConstant() {
         if (type == NumberType.CONSTANT) {
             ConstantNumber constantNumber = (ConstantNumber) this;
@@ -62,6 +123,11 @@ public abstract class BaseNumber {
         }
     }
 
+    /**
+     * Returns real value as Double. Valid for INTEGER, REAL and COMPLEX type
+     * @return For INTEGER, REAL and COMPLEX number returns current value, otherwise Double.NaN
+     * @see NumberType
+     */
     public double getReal() {
         switch (type) {
             case INTEGER: {
@@ -84,6 +150,11 @@ public abstract class BaseNumber {
         }
     }
 
+    /**
+     * Returns imaginary part as Double. Valid for INTEGER, REAL and COMPLEX type
+     * @return For INTEGER and REAL returns 0, for COMPLEX returns current value. Otherwise Double.NaN
+     * @see NumberType
+     */
     public double getImag() {
         switch (type) {
             case INTEGER:
@@ -101,6 +172,11 @@ public abstract class BaseNumber {
         }
     }
 
+    /**
+     * Returns items of matrix number. Valid only for MATRIX type
+     * @return For MATRIX return array of matrix items, otherwise null
+     * @see NumberType
+     */
     public BaseNumber[] getMatrixItems() {
         if (type == NumberType.MATRIX) {
             MatrixNumber matrixNumber = (MatrixNumber) this;
@@ -110,6 +186,11 @@ public abstract class BaseNumber {
         }
     }
 
+    /**
+     * Return count of matrix rows. Valid only for MATRIX type
+     * @return For MATRIX return number of rows, otherwise -1
+     * @see NumberType
+     */
     public byte getRows() {
         if (type == NumberType.MATRIX) {
             MatrixNumber matrixNumber = (MatrixNumber) this;
@@ -119,6 +200,11 @@ public abstract class BaseNumber {
         }
     }
 
+    /**
+     * Return count of matrix columns. Valid only for MATRIX type
+     * @return For MATRIX return number of columns, otherwise -1
+     * @see NumberType
+     */
     public byte getCols() {
         if (type == NumberType.MATRIX) {
             MatrixNumber matrixNumber = (MatrixNumber) this;
@@ -128,6 +214,10 @@ public abstract class BaseNumber {
         }
     }
 
+    /**
+     * Put number back into pool. Each number can be put only once
+     * @param number Number previously retrieved by getNaN(), getInteger(), getReal(), getComplex() or getMatrix() function
+     */
     public static void put(BaseNumber number) {
         switch (number.type) {
             case INVALID:
@@ -153,6 +243,11 @@ public abstract class BaseNumber {
         throw new IllegalStateException();
     }
 
+    /**
+     * Try to simplify number. E.g. simplify(BaseNumber.getComplex(1.0, 0.0)).getType() returns INTEGER (with value 1)
+     * @param value Number for simplification
+     * @return Simplified value
+     */
     public static BaseNumber simplify(BaseNumber value) {
         switch (value.type) {
             case INVALID:
@@ -216,6 +311,11 @@ public abstract class BaseNumber {
         throw new IllegalStateException();
     }
 
+    /**
+     * Duplicate number and returns new pointer from pool with same value
+     * @param number Number for duplication
+     * @return Duplicated value
+     */
     public static BaseNumber duplicate(BaseNumber number) {
         switch (number.type) {
             case INVALID:
@@ -250,6 +350,11 @@ public abstract class BaseNumber {
         throw new IllegalStateException();
     }
 
+    /**
+     * Convert number to byte array
+     * @param number Number for storing
+     * @return Byte array representation of number
+     */
     public static byte[] toData(BaseNumber number) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(out);
@@ -264,6 +369,11 @@ public abstract class BaseNumber {
         return out.toByteArray();
     }
 
+    /**
+     * Construct number from byte array
+     * @param data Byte array
+     * @return Constructed number
+     */
     public static BaseNumber fromData(byte[] data) {
         ByteArrayInputStream in = new ByteArrayInputStream(data);
         DataInputStream dis = new DataInputStream(in);
@@ -436,35 +546,169 @@ public abstract class BaseNumber {
      */
     public abstract BaseNumber csch();
 
+    /**
+     * Inverse sine
+     * @return Result of inverse sine
+     */
     public abstract BaseNumber asin();
+
+    /**
+     * Inverse cosine
+     * @return Result of inverse cosine
+     */
     public abstract BaseNumber acos();
+
+    /**
+     * Inverse tangent
+     * @return Result of inverse tangent
+     */
     public abstract BaseNumber atan();
+
+    /**
+     * Inverse cotangent
+     * @return Result of inverse cotangent
+     */
     public abstract BaseNumber acot();
+
+    /**
+     * Inverse secant
+     * @return Result of inverse secant
+     */
     public abstract BaseNumber asec();
+
+    /**
+     * Inverse cosecant
+     * @return Result of inverse cosecant
+     */
     public abstract BaseNumber acsc();
 
+    /**
+     * Inverse hyperbolic sine
+     * @return Result of inverse hyperbolic sine
+     */
     public abstract BaseNumber asinh();
+
+    /**
+     * Inverse hyperbolic cosine
+     * @return Result of inverse hyperbolic cosine
+     */
     public abstract BaseNumber acosh();
+
+    /**
+     * Inverse hyperbolic tangent
+     * @return Result of inverse hyperbolic tangent
+     */
     public abstract BaseNumber atanh();
+
+    /**
+     * Inverse hyperbolic cotangent
+     * @return Result of inverse hyperbolic cotangent
+     */
     public abstract BaseNumber acoth();
+
+    /**
+     * Inverse hyperbolic secant
+     * @return Result of inverse hyperbolic secant
+     */
     public abstract BaseNumber asech();
+
+    /**
+     * Inverse hyperbolic cosecant
+     * @return Result of inverse hyperbolic cosecant
+     */
     public abstract BaseNumber acsch();
 
+    /**
+     * Change value to radians from current type
+     * @param angleType Current angle type
+     * @return Value in radians
+     */
     public abstract BaseNumber toRadians(AngleType angleType);
+
+    /**
+     * Change value defined type from radians
+     * @param angleType New angle type
+     * @return Value in new type
+     */
     public abstract BaseNumber fromRadians(AngleType angleType);
 
+    /**
+     * Inverse value
+     * @return Result of inverse
+     */
     public abstract BaseNumber inv();
+
+    /**
+     * Transpose
+     * @return Result of transpose
+     */
     public abstract BaseNumber transpose();
+
+    /**
+     * Determinant
+     * @return Result of determinant
+     */
     public abstract BaseNumber det();
+
+    /**
+     * Rank
+     * @return Result of rank
+     */
     public abstract BaseNumber rank();
+
+    /**
+     * Trace
+     * @return Result of trace
+     */
     public abstract BaseNumber trace();
+
+    /**
+     * Adjugate
+     * @return Result of adjugate
+     */
     public abstract BaseNumber adjugate();
 
+    /**
+     * Shift bits to right
+     * @param count How much shift, must be of type INTEGER
+     * @return Shifted value
+     * @see NumberType
+     */
     public abstract BaseNumber shr(BaseNumber count);
+
+    /**
+     * Shift bits to left
+     * @param count How much shift, must be of type INTEGER
+     * @return Shifted value
+     * @see NumberType
+     */
     public abstract BaseNumber shl(BaseNumber count);
+
+    /**
+     * Binary and
+     * @param number Another value
+     * @return Result of binary and
+     */
     public abstract BaseNumber and(BaseNumber number);
+
+    /**
+     * Binary or
+     * @param number Another value
+     * @return Result of binary or
+     */
     public abstract BaseNumber or(BaseNumber number);
+
+    /**
+     * Binary xor
+     * @param number Another value
+     * @return Result of binary xor
+     */
     public abstract BaseNumber xor(BaseNumber number);
+
+    /**
+     * Binary negation
+     * @return Result of binary negation
+     */
     public abstract BaseNumber not();
 
     @Override public abstract String toString();
