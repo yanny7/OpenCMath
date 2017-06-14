@@ -2,6 +2,9 @@ package com.opencmath;
 
 import java.io.*;
 
+/**
+ * Base class representing number or matrix
+ */
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseNumber {
     private static final double EPSILON = 1.0E-12;

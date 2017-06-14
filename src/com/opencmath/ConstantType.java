@@ -3,8 +3,18 @@ package com.opencmath;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Constant types
+ */
 public enum ConstantType {
+    /**
+     * PI
+     */
     PI("π", 0, Math.PI),
+
+    /**
+     * E
+     */
     E("e", 1, Math.E),
     ;
 
