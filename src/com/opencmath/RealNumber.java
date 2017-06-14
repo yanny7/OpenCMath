@@ -2,7 +2,7 @@ package com.opencmath;
 
 class RealNumber extends BaseNumber {
 
-    private static final PoolTemplate<RealNumber> pool = new PoolTemplate<>(10, 100000, new PoolFactory<RealNumber>() {
+    private static final PoolTemplate<RealNumber> pool = new PoolTemplate<>(100, 100000, new PoolFactory<RealNumber>() {
         @Override
         public RealNumber create() {
             return new RealNumber();

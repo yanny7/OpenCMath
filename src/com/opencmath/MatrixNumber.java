@@ -3,7 +3,7 @@ package com.opencmath;
 import java.util.Arrays;
 
 class MatrixNumber extends BaseNumber {
-    private static final PoolTemplate<MatrixNumber> pool = new PoolTemplate<>(10, 100000, new PoolFactory<MatrixNumber>() {
+    private static final PoolTemplate<MatrixNumber> pool = new PoolTemplate<>(100, 100000, new PoolFactory<MatrixNumber>() {
         @Override
         public MatrixNumber create() {
             return new MatrixNumber();

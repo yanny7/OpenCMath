@@ -1,7 +1,7 @@
 package com.opencmath;
 
 class ConstantNumber extends BaseNumber {
-    private static final PoolTemplate<ConstantNumber> pool = new PoolTemplate<>(10, 100000, new PoolFactory<ConstantNumber>() {
+    private static final PoolTemplate<ConstantNumber> pool = new PoolTemplate<>(100, 100000, new PoolFactory<ConstantNumber>() {
         @Override
         public ConstantNumber create() {
             return new ConstantNumber();

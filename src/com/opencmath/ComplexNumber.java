@@ -1,7 +1,7 @@
 package com.opencmath;
 
 class ComplexNumber extends BaseNumber {
-    private static final PoolTemplate<ComplexNumber> pool = new PoolTemplate<>(10, 100000, new PoolFactory<ComplexNumber>() {
+    private static final PoolTemplate<ComplexNumber> pool = new PoolTemplate<>(100, 100000, new PoolFactory<ComplexNumber>() {
         @Override
         public ComplexNumber create() {
             return new ComplexNumber();

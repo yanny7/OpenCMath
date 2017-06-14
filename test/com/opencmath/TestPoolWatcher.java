@@ -3,6 +3,7 @@ package com.opencmath;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 class TestPoolWatcher extends TestWatcher {
@@ -25,12 +26,12 @@ class TestPoolWatcher extends TestWatcher {
     }
 
     protected void succeeded(Description description) {
-        assertTrue("InvalidNumber", initialInvalidPoolSize <= InvalidNumber.poolSize());
-        assertTrue("IntegerNumber", initialIntegerPoolSize <= IntegerNumber.poolSize());
-        assertTrue("RealNumber", initialRealPoolSize <= RealNumber.poolSize());
-        assertTrue("ComplexNumber", initialComplexPoolSize <= ComplexNumber.poolSize());
-        assertTrue("ConstantNumber", initialConstantPoolSize <= ConstantNumber.poolSize());
-        assertTrue("MatrixNumber", initialMatrixPoolSize <= MatrixNumber.poolSize());
+        assertEquals(initialInvalidPoolSize, InvalidNumber.poolSize());
+        assertEquals(initialIntegerPoolSize, IntegerNumber.poolSize());
+        assertEquals(initialRealPoolSize, RealNumber.poolSize());
+        assertEquals(initialComplexPoolSize, ComplexNumber.poolSize());
+        assertEquals(initialConstantPoolSize, ConstantNumber.poolSize());
+        assertEquals(initialMatrixPoolSize, MatrixNumber.poolSize());
 
         assertTrue("InvalidNumber consistency", InvalidNumber.checkConsistency());
         assertTrue("IntegerNumber consistency", IntegerNumber.checkConsistency());

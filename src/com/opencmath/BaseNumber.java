@@ -145,6 +145,10 @@ public abstract class BaseNumber {
                 ComplexNumber complexNumber = (ComplexNumber) this;
                 return complexNumber.re;
             }
+            case CONSTANT: {
+                ConstantNumber constantNumber = (ConstantNumber) this;
+                return constantNumber.value.value;
+            }
             case MATRIX:
             case INVALID:
                 return Double.NaN;
@@ -162,6 +166,7 @@ public abstract class BaseNumber {
         switch (type) {
             case INTEGER:
             case REAL:
+            case CONSTANT:
                 return 0;
             case COMPLEX: {
                 ComplexNumber complexNumber = (ComplexNumber) this;

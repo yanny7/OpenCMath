@@ -1,7 +1,7 @@
 package com.opencmath;
 
 class InvalidNumber extends BaseNumber {
-    private static final PoolTemplate<InvalidNumber> pool = new PoolTemplate<>(10, 100000, new PoolFactory<InvalidNumber>() {
+    private static final PoolTemplate<InvalidNumber> pool = new PoolTemplate<>(100, 100000, new PoolFactory<InvalidNumber>() {
         @Override
         public InvalidNumber create() {
             return new InvalidNumber();
