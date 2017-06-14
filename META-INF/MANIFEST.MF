@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Created-By: Jan Lalis
+Name: com/opencmath/
+Specification-Title: Open CMath
+Specification-Version: 0.0.1
+Specification-Vendor: Jan Lalis
+Implementation-Title: Open CMath
+Implementation-Version: 0.0.1
+Implementation-Vendor: Jan Lalis
+Main-Class: com.opencmath.Main
