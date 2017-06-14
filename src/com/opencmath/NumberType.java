@@ -4,8 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum NumberType {
-    COMPLEX((byte) 0),
-    MATRIX((byte) 1),
+    INVALID((byte) 0),
+    INTEGER((byte) 1),
+    REAL((byte) 2),
+    COMPLEX((byte) 3),
+    CONSTANT((byte) 4),
+    MATRIX((byte) 5),
     ;
 
     private static final Map<Byte, NumberType> BY_VALUE = new HashMap<>();

@@ -5,24 +5,20 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 class TestHelper {
-    private static final String PRINT_STRING = "    %27.16e  ==  %27.16e  =>  %11.5e %% (%s)\n";
 
-    static void compareResultAndPut(CBase expected, CBase output) {
-        assertEquals(expected, output);
-        printDifference(expected, output);
-        CBase.put(expected);
-        CBase.put(output);
-    }
+    private static final String PRINT_STRING = "    %27.16e  ==  %27.16e  =>  %11.6e %% (%s)\n";
 
-    static CBase parseValue(String input) {
-        input = input.replace("{", "").replace("}", "").replace(" ", "");
-        return parseNumber(input);
-    }
-
-    private static void printDifference(CBase a, CBase b) {
+    private static void printDifference(BaseNumber a, BaseNumber b) {
         assertEquals(a.type, b.type);
 
         switch (a.type) {
+            case INVALID: {
+                System.out.printf(PRINT_STRING, Double.NaN, Double.NaN, 0.0, NumberType.INVALID);
+                break;
+            }
+            case INTEGER:
+            case REAL:
+            case CONSTANT:
             case COMPLEX:
             case MATRIX: {
                 double x1 = getValue(a);
@@ -40,22 +36,24 @@ class TestHelper {
         }
     }
 
-    private static double getValue(CBase number) {
+    private static double getValue(BaseNumber number) {
         switch (number.type) {
+            case INVALID:
+                return Double.NaN;
+            case INTEGER:
+                return ((IntegerNumber) number).value;
+            case REAL:
+                return ((RealNumber) number).value;
             case COMPLEX: {
-                CNumber cNumber = (CNumber) number;
-
-                if (cNumber.im != 0) {
-                    return Math.sqrt(cNumber.re * cNumber.re + cNumber.im * cNumber.im);
-                } else {
-                    return cNumber.re;
-                }
+                ComplexNumber complexNumber = (ComplexNumber) number;
+                return Math.sqrt(complexNumber.re * complexNumber.re + complexNumber.im * complexNumber.im);
             }
+            case CONSTANT:
+                return ((ConstantNumber) number).value.value;
             case MATRIX: {
-                //CBase tmp = CBase.duplicate(number);
-                CBase tmp = CNumber.get(0, 0);
+                BaseNumber tmp = BaseNumber.duplicate(number).det();
                 double value = getValue(tmp);
-                CBase.put(tmp);
+                BaseNumber.put(tmp);
                 return value;
             }
         }
@@ -63,9 +61,16 @@ class TestHelper {
         throw new IllegalArgumentException();
     }
 
-    private static CBase parseNumber(String number) {
+    static void compareResultAndPut(BaseNumber expected, BaseNumber output) {
+        assertEquals(expected, output);
+        printDifference(expected, output);
+        BaseNumber.put(expected);
+        BaseNumber.put(output);
+    }
+
+    static BaseNumber parseNumber(String number) {
         if (number.startsWith("M")) {
-            ArrayList<CBase> list = new ArrayList<>();
+            ArrayList<BaseNumber> list = new ArrayList<>();
             String[] tokens = number.substring(number.indexOf("["), number.indexOf("]")).replace("[", "").replace("]", "").replace(" ", "").split(";");
             String[] dimen = number.substring(0, number.indexOf("[")).replace("M", "").split("x");
             byte cols = Byte.parseByte(dimen[0]);
@@ -79,13 +84,13 @@ class TestHelper {
                 list.add(parseNumber(token));
             }
 
-            return CMatrix.get(cols, rows, list.toArray(new CBase[0]));
+            return MatrixNumber.get(cols, rows, list.toArray(new BaseNumber[0]));
         } else if ((number.compareTo("ComplexInfinity") == 0) || (number.compareTo("NaN") == 0)) {
-            return CNumber.get(Double.NaN, Double.NaN);
+            return InvalidNumber.get();
         } else if (number.equals("Infinity")) {
-            return CNumber.get(Double.POSITIVE_INFINITY, 0);
+            return RealNumber.get(Double.POSITIVE_INFINITY);
         } else if (number.equals("-Infinity")) {
-            return CNumber.get(Double.NEGATIVE_INFINITY, 0);
+            return RealNumber.get(Double.NEGATIVE_INFINITY);
         } else if (number.contains("i")) {
             String[] tmp = number.split("[-+]");
             double re = 0, im;
@@ -118,19 +123,36 @@ class TestHelper {
                 throw new IllegalArgumentException(number);
             }
 
-            return CNumber.get(re, im);
+            return ComplexNumber.get(re, im);
+        } else if (number.matches("^-?\\d+$")) {
+            try {
+                return IntegerNumber.get(Long.parseLong(number));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(number);
+            }
         } else if (number.matches("[\\x00-\\x20]*[+-]?(Infinity|((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.(\\p{Digit}+)([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*")) {
             try {
-                return CNumber.get(Double.parseDouble(number), 0);
+                return RealNumber.get(Double.parseDouble(number));
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(number);
             }
         } else if (number.compareTo("PI") == 0) {
-            return CNumber.get(Math.PI, 0);
+            return ConstantNumber.get(ConstantType.PI);
         } else if (number.compareTo("E") == 0) {
-            return CNumber.get(Math.E, 0);
+            return ConstantNumber.get(ConstantType.E);
         } else {
             throw new IllegalArgumentException(number);
         }
+    }
+
+    static ArrayList<BaseNumber> parseValues(String input) {
+        ArrayList<BaseNumber> list = new ArrayList<>();
+        String[] tokens = input.replace("{", "").replace("}", "").replace(" ", "").split(",");
+
+        for (String number : tokens) {
+            list.add(parseNumber(number));
+        }
+
+        return list;
     }
 }

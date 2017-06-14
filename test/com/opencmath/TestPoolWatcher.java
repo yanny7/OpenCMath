@@ -5,24 +5,39 @@ import org.junit.runner.Description;
 
 import static org.junit.Assert.assertTrue;
 
-public class TestPoolWatcher extends TestWatcher {
-
+class TestPoolWatcher extends TestWatcher {
+    private int initialInvalidPoolSize;
+    private int initialIntegerPoolSize;
+    private int initialRealPoolSize;
     private int initialComplexPoolSize;
+    private int initialConstantPoolSize;
     private int initialMatrixPoolSize;
 
     protected void starting(Description description) {
-        initialComplexPoolSize = CNumber.poolSize();
-        initialMatrixPoolSize = CMatrix.poolSize();
+        initialInvalidPoolSize = InvalidNumber.poolSize();
+        initialIntegerPoolSize = IntegerNumber.poolSize();
+        initialRealPoolSize = RealNumber.poolSize();
+        initialComplexPoolSize = ComplexNumber.poolSize();
+        initialConstantPoolSize = ConstantNumber.poolSize();
+        initialMatrixPoolSize = MatrixNumber.poolSize();
 
         System.out.printf("Test '%s'\n", description.getDisplayName());
     }
 
     protected void succeeded(Description description) {
-        assertTrue("ComplexNumber", initialComplexPoolSize <= CNumber.poolSize());
-        assertTrue("MatrixNumber", initialMatrixPoolSize <= CMatrix.poolSize());
+        assertTrue("InvalidNumber", initialInvalidPoolSize <= InvalidNumber.poolSize());
+        assertTrue("IntegerNumber", initialIntegerPoolSize <= IntegerNumber.poolSize());
+        assertTrue("RealNumber", initialRealPoolSize <= RealNumber.poolSize());
+        assertTrue("ComplexNumber", initialComplexPoolSize <= ComplexNumber.poolSize());
+        assertTrue("ConstantNumber", initialConstantPoolSize <= ConstantNumber.poolSize());
+        assertTrue("MatrixNumber", initialMatrixPoolSize <= MatrixNumber.poolSize());
 
-        assertTrue("ComplexNumber consistency", CNumber.checkConsistency());
-        assertTrue("MatrixNumber consistency", CMatrix.checkConsistency());
+        assertTrue("InvalidNumber consistency", InvalidNumber.checkConsistency());
+        assertTrue("IntegerNumber consistency", IntegerNumber.checkConsistency());
+        assertTrue("RealNumber consistency", RealNumber.checkConsistency());
+        assertTrue("ComplexNumber consistency", ComplexNumber.checkConsistency());
+        assertTrue("ConstantNumber consistency", ConstantNumber.checkConsistency());
+        assertTrue("MatrixNumber consistency", MatrixNumber.checkConsistency());
     }
 
 }
