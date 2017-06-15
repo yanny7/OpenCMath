@@ -76,10 +76,10 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Gets MATRIX number from pool, with empty items
+     * Gets MATRIX from pool with empty items
      * @param rows Number of rows
      * @param cols Number of columns
-     * @return MATRIX number with defined size
+     * @return MATRIX with defined size
      * @see NumberType
      */
     public static BaseNumber getMatrix(byte rows, byte cols) {
@@ -87,11 +87,11 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Gets MATRIX number from pool
+     * Gets MATRIX from pool with specified items
      * @param rows Number of rows
      * @param cols Number of columns
      * @param items Array of matrix items. All items are in 1D array
-     * @return MATRIX number with defined size and items
+     * @return MATRIX with defined size and items
      * @see NumberType
      */
     public static BaseNumber getMatrix(byte rows, byte cols, BaseNumber[] items) {
@@ -99,8 +99,8 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Returns integer value as Long. Valid only for INTEGER type
-     * @return For INTEGER returns current value, otherwise Long.MIN_VALUE
+     * Returns integer value as Long. Valid only for {@link NumberType#INTEGER} type
+     * @return For INTEGER number returns current value, otherwise Long.MIN_VALUE
      * @see NumberType
      */
     public long getInteger() {
@@ -113,8 +113,8 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Returns constant value as ConstantType. Valid only for CONSTANT type
-     * @return For CONSTANT returns current value, otherwise null
+     * Returns constant value as {@link ConstantType}. Valid only for {@link NumberType#CONSTANT} type
+     * @return For CONSTANT number returns current value, otherwise null
      * @see NumberType
      */
     public ConstantType getConstant() {
@@ -127,8 +127,8 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Returns real value as Double. Valid for INTEGER, REAL and COMPLEX type
-     * @return For INTEGER, REAL and COMPLEX number returns current value, otherwise Double.NaN
+     * Returns real value as Double. Valid for {@link NumberType#INTEGER}, {@link NumberType#REAL} and {@link NumberType#COMPLEX} type
+     * @return For INTEGER, REAL or COMPLEX number returns current value, otherwise Double.NaN
      * @see NumberType
      */
     public double getReal() {
@@ -158,8 +158,8 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Returns imaginary part as Double. Valid for INTEGER, REAL and COMPLEX type
-     * @return For INTEGER and REAL returns 0, for COMPLEX returns current value. Otherwise Double.NaN
+     * Returns imaginary part as Double. Valid for {@link NumberType#INTEGER}, {@link NumberType#REAL} and {@link NumberType#COMPLEX} type
+     * @return For INTEGER and REAL number returns 0, for COMPLEX number returns current value. Otherwise Double.NaN
      * @see NumberType
      */
     public double getImag() {
@@ -181,7 +181,7 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Returns items of matrix number. Valid only for MATRIX type
+     * Returns items of matrix. Valid only for {@link NumberType#MATRIX} type
      * @return For MATRIX return array of matrix items, otherwise null
      * @see NumberType
      */
@@ -195,7 +195,7 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Return count of matrix rows. Valid only for MATRIX type
+     * Return count of matrix rows. Valid only for {@link NumberType#MATRIX} type
      * @return For MATRIX return number of rows, otherwise -1
      * @see NumberType
      */
@@ -209,7 +209,7 @@ public abstract class BaseNumber {
     }
 
     /**
-     * Return count of matrix columns. Valid only for MATRIX type
+     * Return count of matrix columns. Valid only for {@link NumberType#MATRIX} type
      * @return For MATRIX return number of columns, otherwise -1
      * @see NumberType
      */
@@ -224,7 +224,8 @@ public abstract class BaseNumber {
 
     /**
      * Put number back into pool. Each number can be put only once
-     * @param number Number previously retrieved by getNaN(), getInteger(), getReal(), getComplex() or getMatrix() function
+     * @param number Number previously retrieved by {@link #getNaN()}, {@link #getInteger()}, {@link #getReal()}, {@link #getComplex(double, double)},
+     *               {@link #getMatrix(byte, byte, BaseNumber[])} or {@link #getMatrix(byte, byte)} function
      */
     public static void put(BaseNumber number) {
         switch (number.type) {
@@ -630,6 +631,7 @@ public abstract class BaseNumber {
      * Change value to radians from current type
      * @param angleType Current angle type
      * @return Value in radians
+     * @see AngleType
      */
     public abstract BaseNumber toRadians(AngleType angleType);
 
@@ -637,6 +639,7 @@ public abstract class BaseNumber {
      * Change value defined type from radians
      * @param angleType New angle type
      * @return Value in new type
+     * @see AngleType
      */
     public abstract BaseNumber fromRadians(AngleType angleType);
 
