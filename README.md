@@ -33,3 +33,5 @@ Otherwise you lose pointer to object from pool what cause memory leak.
 * Matrix functions: determinant, rank, trace, transpose, adjugate, inverse
 
 All operations except binary support complex numbers and matrices.
+
+[Link to JavaDoc](https://yanny7.github.io/OpenCMath/ "JavaDoc")
