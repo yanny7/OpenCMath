@@ -140,9 +140,9 @@ public class RealNumberTest {
 
     @Test
     public void pow() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{ 2.5,  2.5,                2.5,                                     2.5,                2.5,                 -2.5,                -2.5,                     2.5 }");
-        ArrayList<BaseNumber> paramValues =     parseValues("{ NaN,    2,                2.5,                                    2+3i,                 PI,                   PI,                 2.5,           M2x2[0;1;2;3] }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ NaN, 6.25, 9.8821176880261854, -5.7741959497272868+2.3918948835918766i, 17.789568244261242, -7.6548728654118072i, 9.8821176880261854i, M2x2[1;2.5;6.25;15.625] }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{ 2.5,  2.5,                2.5,                                     2.5,                2.5,                 -2.5,                -2.5,                 -0.5,                                    -0.1,                     2.5 }");
+        ArrayList<BaseNumber> paramValues =     parseValues("{ NaN,    2,                2.5,                                    2+3i,                 PI,                   PI,                 2.5,                 -0.5,                                    -0.1,           M2x2[0;1;2;3] }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ NaN, 6.25, 9.8821176880261854, -5.7741959497272868+2.3918948835918766i, 17.789568244261242, -7.6548728654118072i, 9.8821176880261854i, -1.4142135623730950i, 1.1973092164164023-0.38902934689487654i, M2x2[1;2.5;6.25;15.625] }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.REAL);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).pow(paramValues.get(i)));

@@ -347,7 +347,7 @@ class RealNumber extends BaseNumber {
 
                 double theta = realNumber.value * Math.PI;
                 double tmp = Math.pow(Math.abs(value), realNumber.value);
-                ComplexNumber complexNumber = ComplexNumber.get(0, tmp * Math.sin(theta));
+                ComplexNumber complexNumber = ComplexNumber.get(tmp * Math.cos(theta), tmp * Math.sin(theta));
                 put(number);
                 put(this);
                 return simplify(complexNumber);
