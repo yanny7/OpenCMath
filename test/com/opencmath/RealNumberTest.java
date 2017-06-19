@@ -546,6 +546,16 @@ public class RealNumberTest {
     }
 
     @Test
+    public void gauss() throws Exception {
+        ArrayList<BaseNumber> inputValues =     parseValues("{ 2.5, -2.5 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{   0,    0 }");
+        for (int i = 0; i < expectedValues.size(); i++) {
+            assertEquals(inputValues.get(i).getType(), NumberType.REAL);
+            compareResultAndPut(expectedValues.get(i), inputValues.get(i).gauss());
+        }
+    }
+
+    @Test
     public void toRadians() throws Exception {
         ArrayList<BaseNumber> inputValues =     parseValues("{ 1.5,                  1.5,                 1.5 }");
         ArrayList<BaseNumber> expectedValues =  parseValues("{ 1.5, 0.026179938779914945, 0.02356194490192345 }");

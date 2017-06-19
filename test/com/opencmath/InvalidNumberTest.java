@@ -486,6 +486,16 @@ public class InvalidNumberTest {
     }
 
     @Test
+    public void gauss() throws Exception {
+        ArrayList<BaseNumber> inputValues =     parseValues("{ NaN }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ NaN }");
+        for (int i = 0; i < expectedValues.size(); i++) {
+            assertEquals(inputValues.get(i).getType(), NumberType.INVALID);
+            compareResultAndPut(expectedValues.get(i), inputValues.get(i).gauss());
+        }
+    }
+
+    @Test
     public void toRadians() throws Exception {
         ArrayList<BaseNumber> inputValues =    parseValues("{ NaN }");
         ArrayList<BaseNumber> expectedValues = parseValues("{ NaN }");

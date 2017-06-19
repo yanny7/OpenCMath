@@ -680,6 +680,12 @@ public abstract class BaseNumber {
     public abstract BaseNumber adjugate();
 
     /**
+     * Gauss elimination
+     * @return Result of Gauss elimination
+     */
+    public abstract BaseNumber gauss();
+
+    /**
      * Shift bits to right
      * @param count How much shift, must be of type INTEGER
      * @return Shifted value

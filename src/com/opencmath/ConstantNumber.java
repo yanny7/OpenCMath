@@ -603,6 +603,12 @@ class ConstantNumber extends BaseNumber {
     }
 
     @Override
+    public BaseNumber gauss() {
+        put(this);
+        return IntegerNumber.get(0);
+    }
+
+    @Override
     public BaseNumber rank() {
         put(this);
         return IntegerNumber.get(1);

@@ -1,6 +1,8 @@
 package com.opencmath;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 class MatrixNumber extends BaseNumber {
     private static final PoolTemplate<MatrixNumber> pool = new PoolTemplate<>(100, 100000, new PoolFactory<MatrixNumber>() {
@@ -698,11 +700,16 @@ class MatrixNumber extends BaseNumber {
     }
 
     @Override
+    public BaseNumber gauss() {
+        return gaussElimination(this);
+    }
+
+    @Override
     public BaseNumber rank() {
         if (value.length == 1) {
             BaseNumber tmp;
 
-            if ((value[0] instanceof IntegerNumber) && (((IntegerNumber) value[0]).value == 0)) {
+            if ((value[0].type == NumberType.INTEGER) && (((IntegerNumber) value[0]).value == 0)) {
                 tmp = IntegerNumber.get(0);
             } else {
                 tmp = IntegerNumber.get(1);
@@ -717,7 +724,7 @@ class MatrixNumber extends BaseNumber {
         int count = 0;
         for (int i = 0; i < ((m.cols < m.rows) ? m.cols : m.rows); i++) {
             BaseNumber number = m.value[i * m.cols + i];
-            if (!((number instanceof IntegerNumber) && (((IntegerNumber) number).value == 0))) {
+            if (!((number.type == NumberType.INTEGER) && (((IntegerNumber) number).value == 0))) {
                 count++;
             }
         }
@@ -751,9 +758,23 @@ class MatrixNumber extends BaseNumber {
 
     private static MatrixNumber gaussElimination(MatrixNumber m) {
         if (m.value.length == 1) {
-            put(m.value[0]);
-            m.value[0] = IntegerNumber.get(1);
-            return m;
+            if ((m.value[0].type == NumberType.INTEGER) && (((IntegerNumber) m.value[0]).value == 0)) {
+                return m;
+            } else {
+                put(m.value[0]);
+                m.value[0] = IntegerNumber.get(1);
+                return m;
+            }
+        }
+
+        // invalid matrix
+        for (int i = 0; i < m.rows * m.cols; i++) {
+            if ((m.value[i].type == NumberType.INVALID) || (m.value[i].type == NumberType.MATRIX)) {
+                put(m);
+                BaseNumber[] items = new MatrixNumber[1];
+                items[0] = InvalidNumber.get();
+                return MatrixNumber.get((byte) 1, (byte) 1, items);
+            }
         }
 
         upperTriangleNormalize(m);
@@ -767,7 +788,7 @@ class MatrixNumber extends BaseNumber {
         for (int i = 0; i < m.rows; i++) {
             for (int j = col; j < m.cols; j++) {
                 BaseNumber number = m.value[i * m.cols + col];
-                if ((number instanceof IntegerNumber) && (((IntegerNumber) number).value == 0)) { // switch to next column if this is zero
+                if ((number.type == NumberType.INTEGER) && (((IntegerNumber) number).value == 0)) { // switch to next column if this is zero
                     col++;
                 } else {
                     break;
@@ -787,7 +808,7 @@ class MatrixNumber extends BaseNumber {
 
             for (int j = i + 1; j < m.rows; j++) {
                 BaseNumber number = m.value[j * m.cols + col];
-                if ((number instanceof IntegerNumber) && (((IntegerNumber) number).value == 0)) {
+                if ((number.type == NumberType.INTEGER) && (((IntegerNumber) number).value == 0)) {
                     break;
                 }
 
@@ -810,7 +831,7 @@ class MatrixNumber extends BaseNumber {
         for (int i = 1; i < m.rows; i++) {
             for (int j = col; j < m.cols; j++) {
                 BaseNumber number = m.value[i * m.cols + col];
-                if ((number instanceof IntegerNumber) && (((IntegerNumber) number).value == 0)) { // switch to next column if this is zero
+                if ((number.type == NumberType.INTEGER) && (((IntegerNumber) number).value == 0)) { // switch to next column if this is zero
                     col++;
                 } else {
                     break;
@@ -830,7 +851,7 @@ class MatrixNumber extends BaseNumber {
                 m.value[j * m.cols + col] = IntegerNumber.get(0);
             }
         }
-
+        
         return m;
     }
 
@@ -839,35 +860,42 @@ class MatrixNumber extends BaseNumber {
             return;
         }
 
-        int nullCol = 0;
+        Map<Integer, Integer> zeroes = new HashMap<>();
+
         for (int i = 0; i < matrix.rows; i++) {
-            BaseNumber number = matrix.value[i * matrix.cols + nullCol];
-            if (!((number instanceof IntegerNumber) && (((IntegerNumber) number).value == 0)) && (i + 1 < matrix.rows)) {
-                continue;
-            }
+            int count = 0;
 
-            boolean found = false;
-            boolean swapped = false;
-            for (int j = i + 1; j < matrix.rows; j++) {
-                BaseNumber number2 = matrix.value[j * matrix.cols + nullCol];
-                if (!((number2 instanceof IntegerNumber) && (((IntegerNumber) number2).value == 0))) {
-                    if (!swapped) {
-                        swapRows(matrix, i, j);
-                    }
-                    swapped = true;
+            for (int j = 0; j < matrix.cols; j++) {
+                BaseNumber number = matrix.value[i * matrix.cols + j];
+                if ((number.type == NumberType.INTEGER) && (((IntegerNumber) number).value == 0)) {
+                    count++;
                 } else {
-                    found = true;
+                    break;
                 }
             }
 
-            if (found) {
-                nullCol += 1;
+            zeroes.put(i, count);
+        }
 
-                if (nullCol >= matrix.cols) {
-                    break; // no more nul columns
+        int row = matrix.rows - 1;
+        while (zeroes.size() >= 2) {
+            int maxVal = 0;
+            int maxId = 0;
+
+            for (Map.Entry<Integer, Integer> i : zeroes.entrySet()) {
+                int value = i.getValue();
+                if (value > maxVal) {
+                    maxVal = value;
+                    maxId = i.getKey();
                 }
+            }
+
+            if ((maxVal > 0) && (maxId != row)) {
+                swapRows(matrix, maxId, row);
+                row--;
+                zeroes.remove(maxId);
             } else {
-                break; // no more null columns
+                break;
             }
         }
     }

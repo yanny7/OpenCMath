@@ -546,6 +546,16 @@ public class IntegerNumberTest {
     }
 
     @Test
+    public void gauss() throws Exception {
+        ArrayList<BaseNumber> inputValues =     parseValues("{ 2, -2, 0 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ 0,  0, 0 }");
+        for (int i = 0; i < expectedValues.size(); i++) {
+            assertEquals(inputValues.get(i).getType(), NumberType.INTEGER);
+            compareResultAndPut(expectedValues.get(i), inputValues.get(i).gauss());
+        }
+    }
+
+    @Test
     public void toRadians() throws Exception {
         ArrayList<BaseNumber> inputValues =     parseValues("{ 100,                100,                100 }");
         ArrayList<BaseNumber> expectedValues =  parseValues("{ 100, 1.7453292519943296, 1.5707963267948966 }");

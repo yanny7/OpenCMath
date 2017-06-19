@@ -780,6 +780,12 @@ class IntegerNumber extends BaseNumber {
     }
 
     @Override
+    public BaseNumber gauss() {
+        value = 0;
+        return this;
+    }
+
+    @Override
     public BaseNumber rank() {
         if (value != 0) {
             value = 1;

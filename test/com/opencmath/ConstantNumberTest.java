@@ -546,6 +546,16 @@ public class ConstantNumberTest {
     }
 
     @Test
+    public void gauss() throws Exception {
+        ArrayList<BaseNumber> inputValues =     parseValues("{ PI }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{  0 }");
+        for (int i = 0; i < expectedValues.size(); i++) {
+            assertEquals(inputValues.get(i).getType(), NumberType.CONSTANT);
+            compareResultAndPut(expectedValues.get(i), inputValues.get(i).gauss());
+        }
+    }
+
+    @Test
     public void toRadians() throws Exception {
         ArrayList<BaseNumber> inputValues =     parseValues("{ PI,                   PI,                   PI }");
         ArrayList<BaseNumber> expectedValues =  parseValues("{ PI, 0.054831135561607548, 0.049348022005446793 }");

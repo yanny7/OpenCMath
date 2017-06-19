@@ -51,9 +51,16 @@ class TestHelper {
             case CONSTANT:
                 return ((ConstantNumber) number).value.value;
             case MATRIX: {
-                BaseNumber tmp = BaseNumber.duplicate(number).det();
-                double value = getValue(tmp);
-                BaseNumber.put(tmp);
+                MatrixNumber matrixNumber = (MatrixNumber) number;
+                BaseNumber[] values = matrixNumber.value;
+                BaseNumber sum = IntegerNumber.get(0);
+
+                for (BaseNumber item : values) {
+                    sum = sum.add(BaseNumber.duplicate(item));
+                }
+
+                double value = getValue(sum);
+                BaseNumber.put(sum);
                 return value;
             }
         }
@@ -73,8 +80,8 @@ class TestHelper {
             ArrayList<BaseNumber> list = new ArrayList<>();
             String[] tokens = number.substring(number.indexOf("["), number.indexOf("]")).replace("[", "").replace("]", "").replace(" ", "").split(";");
             String[] dimen = number.substring(0, number.indexOf("[")).replace("M", "").split("x");
-            byte cols = Byte.parseByte(dimen[0]);
-            byte rows = Byte.parseByte(dimen[1]);
+            byte rows = Byte.parseByte(dimen[0]);
+            byte cols = Byte.parseByte(dimen[1]);
 
             for (String token : tokens) {
                 if (token.isEmpty()) {

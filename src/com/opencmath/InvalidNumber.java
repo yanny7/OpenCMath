@@ -294,6 +294,11 @@ class InvalidNumber extends BaseNumber {
     }
 
     @Override
+    public BaseNumber gauss() {
+        return this;
+    }
+
+    @Override
     public BaseNumber rank() {
         return this;
     }

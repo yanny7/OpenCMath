@@ -546,6 +546,16 @@ public class ComplexNumberTest {
     }
 
     @Test
+    public void gauss() throws Exception {
+        ArrayList<BaseNumber> inputValues =     parseValues("{ 2+3i, 2-3i, -2+3i, -2-3i, -2i, 2i }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{    0,    0,     0,     0,   0,  0 }");
+        for (int i = 0; i < expectedValues.size(); i++) {
+            assertEquals(inputValues.get(i).getType(), NumberType.COMPLEX);
+            compareResultAndPut(expectedValues.get(i), inputValues.get(i).gauss());
+        }
+    }
+
+    @Test
     public void toRadians() throws Exception {
         ArrayList<BaseNumber> inputValues =     parseValues("{ 2+3i,                                       2+3i,                                       2+3i }");
         ArrayList<BaseNumber> expectedValues =  parseValues("{ 2+3i, 0.034906585039886592+0.052359877559829887i, 0.031415926535897932+0.047123889803846899i }");
