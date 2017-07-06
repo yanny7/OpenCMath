@@ -5,7 +5,7 @@ import java.io.*;
 /**
  * Base class representing number or matrix
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public abstract class BaseNumber {
     private static final double EPSILON = 1.0E-12;
 
@@ -13,6 +13,56 @@ public abstract class BaseNumber {
 
     BaseNumber(NumberType type) {
         this.type = type;
+    }
+
+    /**
+     * Get information about current pool size
+     * @param type Number type
+     * @return Return current pool size of given type
+     * @see NumberType
+     */
+    public static int getPoolSize(NumberType type) {
+        switch (type) {
+            case INVALID:
+                return InvalidNumber.poolSize();
+            case INTEGER:
+                return IntegerNumber.poolSize();
+            case REAL:
+                return RealNumber.poolSize();
+            case CONSTANT:
+                return ConstantNumber.poolSize();
+            case COMPLEX:
+                return ComplexNumber.poolSize();
+            case MATRIX:
+                return MatrixNumber.poolSize();
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Check consistency of items in pool (looks for duplicates in pool)
+     * @param type Number type
+     * @return True if pool items are valid, else false
+     * @see NumberType
+     */
+    public static boolean checkConsistency(NumberType type) {
+        switch (type) {
+            case INVALID:
+                return InvalidNumber.checkConsistency();
+            case INTEGER:
+                return IntegerNumber.checkConsistency();
+            case REAL:
+                return RealNumber.checkConsistency();
+            case CONSTANT:
+                return ConstantNumber.checkConsistency();
+            case COMPLEX:
+                return ComplexNumber.checkConsistency();
+            case MATRIX:
+                return MatrixNumber.checkConsistency();
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     /**
