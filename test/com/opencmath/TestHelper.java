@@ -78,7 +78,7 @@ class TestHelper {
     static BaseNumber parseNumber(String number) {
         if (number.startsWith("M")) {
             ArrayList<BaseNumber> list = new ArrayList<>();
-            String[] tokens = number.substring(number.indexOf("["), number.indexOf("]")).replace("[", "").replace("]", "").replace(" ", "").split(";");
+            String[] tokens = number.substring(number.indexOf("[") + 1, number.lastIndexOf("]")).replace(" ", "").split(";");
             String[] dimen = number.substring(0, number.indexOf("[")).replace("M", "").split("x");
             byte rows = Byte.parseByte(dimen[0]);
             byte cols = Byte.parseByte(dimen[1]);

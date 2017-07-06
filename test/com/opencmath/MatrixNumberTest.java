@@ -147,9 +147,9 @@ public class MatrixNumberTest {
 
     @Test
     public void pow() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{ M2x2[0;1;2;3],  M2x2[1;2;3;4], M2x2[-4;4;-4;4], M2x2[1;1;1;1], M2x2[1;1;1;1], M2x2[0;1;2;3] }");
-        ArrayList<BaseNumber> paramValues =     parseValues("{           NaN,              2,             0.5,            1i,            PI, M2x2[3;2;1;0] }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{           NaN, M2x2[1;4;9;16], M2x2[2i;2;2i;2], M2x2[1;1;1;1], M2x2[1;1;1;1],           NaN }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{ M2x2[0;1;2;3],  M2x2[1;2;3;4], M2x2[-4;4;-4;4], M2x2[1;1;1;1], M2x2[1;1;1;1], M2x2[0;1;2;3],      M2x2[0;1;2;3] }");
+        ArrayList<BaseNumber> paramValues =     parseValues("{           NaN,              2,             0.5,            1i,            PI, M2x2[3;2;1;0],                 -1 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{           NaN, M2x2[1;4;9;16], M2x2[2i;2;2i;2], M2x2[1;1;1;1], M2x2[1;1;1;1],           NaN, M2x2[-1.5;0.5;1;0] }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.MATRIX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).pow(paramValues.get(i)));
@@ -534,8 +534,8 @@ public class MatrixNumberTest {
 
     @Test
     public void rank() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{ M1x1[1], M2x2[1;2;3;4], M3x3[1;2;3;4;5;6;7;8;9], M4x4[1;5;2;3;5;5;6;9;9;9;10;15;13;15;14;19], M1x2[1;2], M2x1[1;2] }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{       1,             2,                       2,                                           4,         1,         1 }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{ M1x1[1], M2x2[1;2;3;4], M3x3[1;2;3;4;5;6;7;8;9], M4x4[1;5;2;3;5;5;6;9;9;9;10;15;13;15;14;19], M1x2[1;2], M2x1[1;2], M1x1[0] }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{       1,             2,                       2,                                           4,         1,         1,       0 }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.MATRIX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).rank());
@@ -554,8 +554,8 @@ public class MatrixNumberTest {
 
     @Test
     public void gauss() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{ M1x1[1], M2x2[1;2;3;4], M3x3[0;1;2;3;4;5;6;7;9], M4x4[1;5;2;3;5;5;6;9;9;9;10;15;13;15;14;19], M1x2[1;2], M2x1[1;2], M3x4[1;3;1;9;1;1;-1;1;3;11;5;35] }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ M1x1[1], M2x2[1;0;0;1], M3x3[1;0;0;0;1;0;0;0;1],       M4x4[1;0;0;0;0;1;0;0;0;0;1;0;0;0;0;1], M1x2[1;2], M2x1[1;0],  M3x4[1;0;-2;-3;0;1;1;4;0;0;0;0] }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{ M1x1[1], M2x2[1;2;3;4], M3x3[0;1;2;3;4;5;6;7;9], M4x4[1;5;2;3;5;5;6;9;9;9;10;15;13;15;14;19], M1x2[1;2], M2x1[1;2], M3x4[1;3;1;9;1;1;-1;1;3;11;5;35], M1x1[0], M2x1[M1x1[0];1] }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ M1x1[1], M2x2[1;0;0;1], M3x3[1;0;0;0;1;0;0;0;1],       M4x4[1;0;0;0;0;1;0;0;0;0;1;0;0;0;0;1], M1x2[1;2], M2x1[1;0],  M3x4[1;0;-2;-3;0;1;1;4;0;0;0;0], M1x1[0], M1x1[NaN] }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.MATRIX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).gauss());

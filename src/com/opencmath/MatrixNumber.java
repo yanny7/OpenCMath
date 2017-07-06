@@ -350,6 +350,7 @@ class MatrixNumber extends BaseNumber {
             case INTEGER: {
                 IntegerNumber integerNumber = (IntegerNumber) exp;
                 if (integerNumber.value == -1) {
+                    put(exp);
                     return inv();
                 }
             }
@@ -771,7 +772,7 @@ class MatrixNumber extends BaseNumber {
         for (int i = 0; i < m.rows * m.cols; i++) {
             if ((m.value[i].type == NumberType.INVALID) || (m.value[i].type == NumberType.MATRIX)) {
                 put(m);
-                BaseNumber[] items = new MatrixNumber[1];
+                BaseNumber[] items = new BaseNumber[1];
                 items[0] = InvalidNumber.get();
                 return MatrixNumber.get((byte) 1, (byte) 1, items);
             }

@@ -252,8 +252,8 @@ public class RealNumberTest {
 
     @Test
     public void acos() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{               -0.5,                0.5,                                   -2.5,                 2.5 }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ 2.0943951023931955, 1.0471975511965977, 3.1415926535897932-1.5667992369724111i, 1.5667992369724111i }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{               -0.5,                0.5,                                   -2.5,                 2.5, -1.0 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ 2.0943951023931955, 1.0471975511965977, 3.1415926535897932-1.5667992369724111i, 1.5667992369724111i,   PI }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.REAL);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).acos());
@@ -282,8 +282,8 @@ public class RealNumberTest {
 
     @Test
     public void asec() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{                                   -0.5,                 0.5,               -2.5,                2.5 }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ 3.1415926535897932-1.3169578969248167i, 1.3169578969248167i, 1.9823131728623846, 1.1592794807274086 }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{                                   -0.5,                 0.5,               -2.5,                2.5, -1.0 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ 3.1415926535897932-1.3169578969248167i, 1.3169578969248167i, 1.9823131728623846, 1.1592794807274086,   PI }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.REAL);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).asec());
