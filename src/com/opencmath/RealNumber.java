@@ -697,6 +697,20 @@ class RealNumber extends BaseNumber {
     @Override
     public BaseNumber asech() {
         // asech(z) = ln(sqrt(1/z - 1)sqrt(1/z + 1) + 1/z)
+        if (value > 1) { // re=0 im=atan2(sqrt((x-1)/(x+1))*(1/x + 1), 1/x)
+            double inv = 1 / value;
+            ComplexNumber complexNumber = ComplexNumber.get(0, Math.atan2(Math.sqrt((value - 1) / (value + 1)) * (inv + 1), inv));
+            put(this);
+            return simplify(complexNumber);
+        }
+        if (value < -1) { // re=0 im=atan2(sqrt(()/())*(1/x + 1), 1/x)
+            double inv = 1 / value;
+            double abs = -value;
+            ComplexNumber complexNumber = ComplexNumber.get(0, Math.atan2(Math.sqrt((abs + 1) / (abs - 1)) * (inv + 1), inv));
+            put(this);
+            return simplify(complexNumber);
+        }
+
         double val = 1.0 / value;
         BaseNumber sqrt1 = RealNumber.get(val).sub(getOne()).sqrt();
         BaseNumber sqrt2 = RealNumber.get(val).add(getOne()).sqrt();
