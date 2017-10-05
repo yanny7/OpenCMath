@@ -520,33 +520,33 @@ class RealNumber extends BaseNumber {
 
     @Override
     public BaseNumber cot() {
-        double tangent = Math.tan(value);
-        value = 1.0 / tangent;
+        value = 1.0 / Math.tan(value);
         return simplify(this);
     }
 
     @Override
     public BaseNumber sec() {
-        double cosine = Math.cos(value);
-        value = 1.0 / cosine;
+        value = 1.0 / Math.cos(value);
         return simplify(this);
     }
 
     @Override
     public BaseNumber csc() {
-        double sine = Math.sin(value);
-        value = 1.0 / sine;
+        value = 1.0 / Math.sin(value);
         return simplify(this);
     }
 
     @Override
     public BaseNumber asin() {
-        if ((value < -1) || (value > 1)) {
-            // asin(z) = -i (log(sqrt(1 - z^2) + iz))
-            BaseNumber tmp = getOne().sub(RealNumber.get(value * value)).sqrt();
-            BaseNumber ret = tmp.add(getComplexOne().mul(RealNumber.get(value))).ln().mul(getComplexMinusOne());
+        if (value > 1) {
+            BaseNumber tmp = ComplexNumber.get(M_PI2, -Math.log(Math.sqrt(value * value - 1) + value));
             put(this);
-            return simplify(ret);
+            return tmp;
+        }
+        if (value < -1) {
+            BaseNumber tmp = ComplexNumber.get(-M_PI2, Math.log(Math.sqrt(value * value - 1) - value));
+            put(this);
+            return tmp;
         }
 
         value = Math.asin(value);
@@ -555,17 +555,15 @@ class RealNumber extends BaseNumber {
 
     @Override
     public BaseNumber acos() {
-        if ((value < -1) || (value > 1)) {
-            // acos(z) = -i (log(z + i (sqrt(1 - z^2))))
-            BaseNumber tmp = getOne().sub(RealNumber.get(value * value)).sqrt();
-            BaseNumber ret = tmp.mul(getComplexOne()).add(RealNumber.get(value)).ln().mul(getComplexMinusOne());
+        if (value > 1) {
+            BaseNumber tmp = ComplexNumber.get(0, Math.log(Math.sqrt(value * value - 1) + value));
             put(this);
-            return simplify(ret);
+            return tmp;
         }
-
-        if (value == -1) {
+        if (value < -1) {
+            BaseNumber tmp = ComplexNumber.get(Math.PI, -Math.log(Math.sqrt(value * value - 1) - value));
             put(this);
-            return ConstantNumber.get(ConstantType.PI);
+            return tmp;
         }
 
         value = Math.acos(value);
@@ -586,16 +584,19 @@ class RealNumber extends BaseNumber {
 
     @Override
     public BaseNumber asec() {
-        if ((value > -1) && (value < 1)) {
-            // asec(z) = acos(1/z)
-            BaseNumber tmp = getOne().div(RealNumber.get(value)).acos();
+        if ((value > 0) && (value < 1)) {
+            double inv = 1 / value;
+            value = Math.log(Math.sqrt(inv * inv - 1) + inv);
+            BaseNumber tmp = ComplexNumber.get(0, value);
             put(this);
             return simplify(tmp);
         }
-
-        if (value == -1) {
+        if ((value > -1) && (value < 0)) {
+            double inv = 1 / -value;
+            value = -Math.log(Math.sqrt(inv * inv - 1) + inv);
+            BaseNumber tmp = ComplexNumber.get(Math.PI, value);
             put(this);
-            return ConstantNumber.get(ConstantType.PI);
+            return simplify(tmp);
         }
 
         value = Math.acos(1.0 / value);
@@ -604,9 +605,17 @@ class RealNumber extends BaseNumber {
 
     @Override
     public BaseNumber acsc() {
-        if ((value > -1) & (value < 1)) {
-            // acsc(z) = asin(1/z)
-            BaseNumber tmp = getOne().div(RealNumber.get(value)).asin();
+        if ((value > 0) && (value < 1)) {
+            double inv = 1 / value;
+            value = -Math.log(Math.sqrt(inv * inv - 1) + inv);
+            BaseNumber tmp = ComplexNumber.get(M_PI2, value);
+            put(this);
+            return simplify(tmp);
+        }
+        if ((value > -1) && (value < 0)) {
+            double inv = 1 / -value;
+            value = Math.log(Math.sqrt(inv * inv - 1) + inv);
+            BaseNumber tmp = ComplexNumber.get(-M_PI2, value);
             put(this);
             return simplify(tmp);
         }
@@ -661,14 +670,20 @@ class RealNumber extends BaseNumber {
     @Override
     public BaseNumber acosh() {
         // acosh(z) = ln(z + sqrt(z + 1)sqrt(z - 1))
-        if (value >= 1) {
+        if (value > 1) { // re=ln(x+sqrt(x+1)*sqrt(x-1)) im=0
             value = Math.log(value + Math.sqrt(value + 1) * Math.sqrt(value - 1));
-            return simplify(this);
+            return this;
+        }
+        if (value < -1) { // re=ln(abs(x)+sqrt(abs(x)+1)*sqrt(abs(x)-1)) im=PI
+            value = -value;
+            value = Math.log(value + Math.sqrt(value + 1) * Math.sqrt(value - 1));
+            BaseNumber tmp = ComplexNumber.get(value, Math.PI);
+            put(this);
+            return simplify(tmp);
         }
 
-        BaseNumber sqrt1 = RealNumber.get(value + 1).sqrt();
-        BaseNumber sqrt2 = RealNumber.get(value - 1).sqrt();
-        BaseNumber tmp = RealNumber.get(value).add(sqrt1.mul(sqrt2)).ln();
+        // re=0 im=atan2(sqrt(x+1)*sqrt(abs(x-1)), x)
+        BaseNumber tmp = ComplexNumber.get(0, Math.atan2(Math.sqrt(value + 1) * Math.sqrt(Math.abs(value - 1)), value));
         put(this);
         return simplify(tmp);
     }
@@ -676,9 +691,17 @@ class RealNumber extends BaseNumber {
     @Override
     public BaseNumber atanh() {
         // atanh(z) = 1/2 (ln(1 + z) - ln(1 - z))
-        BaseNumber ln1 = getOne().add(RealNumber.get(value)).ln();
-        BaseNumber ln2 = getOne().sub(RealNumber.get(value)).ln();
-        BaseNumber tmp = RealNumber.get(0.5).mul(ln1.sub(ln2));
+        if ((value > -1) && (value < 1)) { // re=0.5*ln(x+1)-0.5*ln(1-x) im=0
+            value = 0.5 * Math.log(value + 1) - 0.5 * Math.log(1 - value);
+            return this;
+        }
+
+        // re = 0.25*ln((x+1)^2)-0.25*ln((1-x)^2) im=(value>0) ? -PI/2 : PI/2
+        double a = value + 1;
+        double b = 1 - value;
+        double re = 0.25 * Math.log(a * a) - 0.25 * Math.log(b * b);
+        double im = (value > 0) ? -M_PI2 : M_PI2;
+        BaseNumber tmp = ComplexNumber.get(re, im);
         put(this);
         return simplify(tmp);
     }
@@ -686,10 +709,19 @@ class RealNumber extends BaseNumber {
     @Override
     public BaseNumber acoth() {
         // atanh(z) = 1/2 (ln(1 + 1/z) - ln(1 - 1/z))
-        double val = 1.0 / value;
-        BaseNumber ln1 = getOne().add(RealNumber.get(val)).ln();
-        BaseNumber ln2 = getOne().sub(RealNumber.get(val)).ln();
-        BaseNumber tmp = RealNumber.get(0.5).mul(ln1.sub(ln2));
+        if ((value < -1) || (value > 1)) { // re=0.5*ln(1/x+1)-0.5*ln(1-1/x) im=0
+            double inv = 1 / value;
+            value = 0.5 * Math.log(inv + 1) - 0.5 * Math.log(1 - inv);
+            return this;
+        }
+
+        // re=0.25*ln((1/x+1)^2)-0.25*ln((1-1/x)^2) im=(value>0) ? -PI/2 : PI/2
+        double inv = 1 / value;
+        double a = inv + 1;
+        double b = 1 - inv;
+        double re = 0.25 * Math.log(a * a) - 0.25 * Math.log(b * b);
+        double im = (value > 0) ? -M_PI2 : M_PI2;
+        BaseNumber tmp = ComplexNumber.get(re, im);
         put(this);
         return simplify(tmp);
     }
@@ -698,32 +730,33 @@ class RealNumber extends BaseNumber {
     public BaseNumber asech() {
         // asech(z) = ln(sqrt(1/z - 1)sqrt(1/z + 1) + 1/z)
         if (value > 1) { // re=0 im=atan2(sqrt((x-1)/(x+1))*(1/x + 1), 1/x)
-            double inv = 1 / value;
+            double inv = 1.0 / value;
             ComplexNumber complexNumber = ComplexNumber.get(0, Math.atan2(Math.sqrt((value - 1) / (value + 1)) * (inv + 1), inv));
             put(this);
             return simplify(complexNumber);
-        }
-        if (value < -1) { // re=0 im=atan2(sqrt(()/())*(1/x + 1), 1/x)
-            double inv = 1 / value;
-            double abs = -value;
-            ComplexNumber complexNumber = ComplexNumber.get(0, Math.atan2(Math.sqrt((abs + 1) / (abs - 1)) * (inv + 1), inv));
+        } else if (value < -1) { // re=0 im=atan2(sqrt((1-x)/(-x-1))*(1/x + 1), 1/x)
+            double inv = 1.0 / value;
+            ComplexNumber complexNumber = ComplexNumber.get(0, Math.atan2(Math.sqrt((1 - value) / (-value - 1)) * (inv + 1), inv));
+            put(this);
+            return simplify(complexNumber);
+        } else if (value > 0) { // re=ln(sqrt(1/x-1)*sqrt(1/x+1)+1/x) im=0
+            double inv = 1.0 / value;
+            value = Math.log(Math.sqrt(inv - 1) * Math.sqrt(inv + 1) + inv);
+            return this;
+        } else /*if (value < 0)*/ { // re=ln(sqrt(1/x-1)*sqrt(1/x+1)+1/x) im=PI
+            double inv = 1.0 / (-value);
+            ComplexNumber complexNumber = ComplexNumber.get(Math.log(Math.sqrt(inv - 1) * Math.sqrt(inv + 1) + inv), Math.PI);
             put(this);
             return simplify(complexNumber);
         }
-
-        double val = 1.0 / value;
-        BaseNumber sqrt1 = RealNumber.get(val).sub(getOne()).sqrt();
-        BaseNumber sqrt2 = RealNumber.get(val).add(getOne()).sqrt();
-        BaseNumber tmp = sqrt1.mul(sqrt2).add(RealNumber.get(val)).ln();
-        put(this);
-        return simplify(tmp);
     }
 
     @Override
     public BaseNumber acsch() {
-        BaseNumber tmp = RealNumber.get(1 / value).asinh();
-        put(this);
-        return simplify(tmp);
+        // re=ln(sqrt(1/(x^2)+1)+1/x) im=0
+        double inv = 1 / value;
+        value = Math.log(Math.sqrt(inv * inv + 1) + inv);
+        return this;
     }
 
     @Override

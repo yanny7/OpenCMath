@@ -312,8 +312,8 @@ public class IntegerNumberTest {
 
     @Test
     public void cosh() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{                 -2,                  2 }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ 3.7621956910836315, 3.7621956910836315 }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{                 -2,                  2, 0 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ 3.7621956910836315, 3.7621956910836315, 1 }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.INTEGER);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).cosh());

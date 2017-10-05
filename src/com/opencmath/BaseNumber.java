@@ -8,6 +8,7 @@ import java.io.*;
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public abstract class BaseNumber {
     private static final double EPSILON = 1.0E-12;
+    protected static final double M_PI2 = Math.PI / 2.0;
 
     final NumberType type;
 

@@ -442,6 +442,9 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber sin() {
+        if (value == 0) {
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).sin();
         put(this);
         return simplify(number);
@@ -449,6 +452,10 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber cos() {
+        if (value == 0) {
+            value = 1;
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).cos();
         put(this);
         return simplify(number);
@@ -477,6 +484,10 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber sec() {
+        if (value == 0) {
+            value = 1;
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).sec();
         put(this);
         return simplify(number);
@@ -495,6 +506,17 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber asin() {
+        if (value == 0) {
+            return this;
+        }
+        if (value == 1) {
+            put(this);
+            return RealNumber.get(M_PI2);
+        }
+        if (value == -1) {
+            put(this);
+            return RealNumber.get(-M_PI2);
+        }
         BaseNumber number = RealNumber.get(value).asin();
         put(this);
         return simplify(number);
@@ -502,6 +524,18 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber acos() {
+        if (value == 0) {
+            put(this);
+            return RealNumber.get(M_PI2);
+        }
+        if (value == 1) {
+            value = 0;
+            return this;
+        }
+        if (value == -1) {
+            put(this);
+            return ConstantNumber.get(ConstantType.PI);
+        }
         BaseNumber number = RealNumber.get(value).acos();
         put(this);
         return simplify(number);
@@ -509,6 +543,9 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber atan() {
+        if (value == 0) {
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).atan();
         put(this);
         return simplify(number);
@@ -516,6 +553,11 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber acot() {
+        if (value == 0) {
+            BaseNumber tmp = RealNumber.get(M_PI2);
+            put(this);
+            return tmp;
+        }
         BaseNumber number = RealNumber.get(value).acot();
         put(this);
         return simplify(number);
@@ -523,6 +565,18 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber asec() {
+        if (value == 0) {
+            put(this);
+            return InvalidNumber.get();
+        }
+        if (value == 1) {
+            value = 0;
+            return this;
+        }
+        if (value == -1) {
+            put(this);
+            return ConstantNumber.get(ConstantType.PI);
+        }
         BaseNumber number = RealNumber.get(value).asec();
         put(this);
         return simplify(number);
@@ -530,6 +584,18 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber acsc() {
+        if (value == 0) {
+            put(this);
+            return InvalidNumber.get();
+        }
+        if (value == 1) {
+            put(this);
+            return RealNumber.get(M_PI2);
+        }
+        if (value == -1) {
+            put(this);
+            return RealNumber.get(-M_PI2);
+        }
         BaseNumber number = RealNumber.get(value).acsc();
         put(this);
         return simplify(number);
@@ -537,6 +603,9 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber sinh() {
+        if (value == 0) {
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).sinh();
         put(this);
         return simplify(number);
@@ -544,6 +613,10 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber cosh() {
+        if (value == 0) {
+            value = 1;
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).cosh();
         put(this);
         return simplify(number);
@@ -551,6 +624,9 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber tanh() {
+        if (value == 0) {
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).tanh();
         put(this);
         return simplify(number);
@@ -569,6 +645,10 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber sech() {
+        if (value == 0) {
+            value = 1;
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).sech();
         put(this);
         return simplify(number);
@@ -587,6 +667,9 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber asinh() {
+        if (value == 0) {
+            return this;
+        }
         BaseNumber number = RealNumber.get(value).asinh();
         put(this);
         return simplify(number);
@@ -594,6 +677,20 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber acosh() {
+        if (value == 0) {
+            BaseNumber tmp = ComplexNumber.get(0, M_PI2);
+            put(this);
+            return tmp;
+        }
+        if (value == 1) {
+            value = 0;
+            return this;
+        }
+        if (value == -1) {
+            BaseNumber tmp = ComplexNumber.get(0, Math.PI);
+            put(this);
+            return tmp;
+        }
         BaseNumber number = RealNumber.get(value).acosh();
         put(this);
         return simplify(number);
@@ -601,6 +698,19 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber atanh() {
+        if (value == 0) {
+            return this;
+        }
+        if (value == 1) {
+            BaseNumber tmp = RealNumber.get(Double.POSITIVE_INFINITY);
+            put(this);
+            return tmp;
+        }
+        if (value == -1) {
+            BaseNumber tmp = RealNumber.get(Double.NEGATIVE_INFINITY);
+            put(this);
+            return tmp;
+        }
         BaseNumber number = RealNumber.get(value).atanh();
         put(this);
         return simplify(number);
@@ -611,7 +721,17 @@ class IntegerNumber extends BaseNumber {
         if (value == 0) {
             BaseNumber tmp = ComplexNumber.get(0, Math.PI / 2.0);
             put(this);
-            return simplify(tmp);
+            return tmp;
+        }
+        if (value == 1) {
+            BaseNumber tmp = RealNumber.get(Double.POSITIVE_INFINITY);
+            put(this);
+            return tmp;
+        }
+        if (value == -1) {
+            BaseNumber tmp = RealNumber.get(Double.NEGATIVE_INFINITY);
+            put(this);
+            return tmp;
         }
         BaseNumber number = RealNumber.get(value).acoth();
         put(this);
@@ -620,6 +740,18 @@ class IntegerNumber extends BaseNumber {
 
     @Override
     public BaseNumber asech() {
+        if (value == 1) {
+            value = 0;
+            return this;
+        }
+        if (value == 0) {
+            put(this);
+            return RealNumber.get(Double.POSITIVE_INFINITY);
+        }
+        if (value == -1) {
+            put(this);
+            return ComplexNumber.get(0, Math.PI);
+        }
         BaseNumber number = RealNumber.get(value).asech();
         put(this);
         return simplify(number);
