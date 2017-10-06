@@ -621,14 +621,15 @@ class ComplexNumber extends BaseNumber {
         double sqIm = (2 * re * im) / pow2;
         // sqrt()
         double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe, sqrtIm;
+        double sqrtRe = 0, sqrtIm = 0;
         if (sqRe >= 0) {
             sqrtRe = t;
             sqrtIm = sqIm / (2 * t);
-        } else {
+        }/* else { //unaccessible code due to expression y^2/(x^2+y^2)-x^2(x^2+y^2)+1 is always > 0
+
             sqrtRe = Math.abs(sqIm) / (2 * t);
             sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
-        }
+        }*/
         // log(sqrt()+1/z)
         double tmpRe = im / powSum + sqrtRe;
         double tmpIm = re / powSum + sqrtIm;
@@ -651,14 +652,14 @@ class ComplexNumber extends BaseNumber {
         double sqIm = (2 * re * im) / pow2;
         // sqrt()
         double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe, sqrtIm;
+        double sqrtRe = 0, sqrtIm = 0;
         if (sqRe >= 0) {
             sqrtRe = t;
             sqrtIm = sqIm / (2 * t);
-        } else {
+        }/* else { //unaccessible code due to expression y^2/(x^2+y^2)-x^2(x^2+y^2)+1 is always > 0
             sqrtRe = Math.abs(sqIm) / (2 * t);
             sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
-        }
+        }*/
         // log(sqrt()+1/z)
         double tmpRe = im / powSum + sqrtRe;
         double tmpIm = re / powSum + sqrtIm;
@@ -885,14 +886,14 @@ class ComplexNumber extends BaseNumber {
         double sqIm = -2 * re * im / sum2;
         // sqrt()
         double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe, sqrtIm;
+        double sqrtRe = 0, sqrtIm = 0;
         if (sqRe >= 0) {
             sqrtRe = t;
             sqrtIm = sqIm / (2 * t);
-        } else {
+        }/* else { //unaccessible code due to expression x^2/(x^2+y^2)-y^2(x^2+y^2)+1 is always > 0
             sqrtRe = Math.abs(sqIm) / (2 * t);
             sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
-        }
+        }*/
         // log()
         double tmpRe = sqrtRe + re / sum;
         double tmpIm = sqrtIm - im / sum;

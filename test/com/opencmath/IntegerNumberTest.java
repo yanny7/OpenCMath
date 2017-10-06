@@ -465,9 +465,9 @@ public class IntegerNumberTest {
 
     @Test
     public void shl() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{   2,   8,   2,   2,    2,       2 }");
-        ArrayList<BaseNumber> paramValues =     parseValues("{ NaN,   4, 2.5,  PI, 2+3i, M1x1[5] }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ NaN, 128, NaN, NaN,  NaN,     NaN }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{   2,   8,   2,   2,    2,       2,  2 }");
+        ArrayList<BaseNumber> paramValues =     parseValues("{ NaN,   4, 2.5,  PI, 2+3i, M1x1[5], 64 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ NaN, 128, NaN, NaN,  NaN,     NaN,  0 }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.INTEGER);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).shl(paramValues.get(i)));

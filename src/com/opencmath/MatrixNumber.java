@@ -27,10 +27,8 @@ class MatrixNumber extends BaseNumber {
         this.cols = newCols;
         this.rows = newRows;
 
-        for (BaseNumber num : value) {
-            if (num != null) {
-                put(num);
-            }
+        if (value.length > 0) {
+            throw new IllegalStateException();
         }
 
         value = new BaseNumber[newCols * newRows];
@@ -96,10 +94,6 @@ class MatrixNumber extends BaseNumber {
         MatrixNumber matrixNumber = (MatrixNumber) obj;
 
         if ((matrixNumber.cols != cols) || (matrixNumber.rows != rows)) {
-            return false;
-        }
-
-        if (value.length != matrixNumber.value.length) {
             return false;
         }
 
