@@ -447,70 +447,103 @@ class ComplexNumber extends BaseNumber {
     public BaseNumber sin() {
         // http://mathworld.wolfram.com/Sine.html
         // sin(a + bi) = sin(a)cosh(b) + cos(a)sinh(b)i
-        double tmpRe = Math.sin(re) * Math.cosh(im);
-        double tmpIm = Math.cos(re) * Math.sinh(im);
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            im = Math.sinh(im);
+            return this;
+        } else {
+            double tmpRe = Math.sin(re) * Math.cosh(im);
+            double tmpIm = Math.cos(re) * Math.sinh(im);
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber cos() {
         // http://mathworld.wolfram.com/Cosine.html
         // cos(a + bi) = cos(a)cosh(b) - sin(a)sinh(b)i
-        double tmpRe = Math.cos(re) * Math.cosh(im);
-        double tmpIm = -Math.sin(re) * Math.sinh(im);
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            BaseNumber tmp = RealNumber.get(Math.cosh(im));
+            put(this);
+            return simplify(tmp);
+        } else {
+            double tmpRe = Math.cos(re) * Math.cosh(im);
+            double tmpIm = -Math.sin(re) * Math.sinh(im);
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber tan() {
         // http://mathworld.wolfram.com/Tangent.html
         // tan(a + bi) = sin(2a)/(cos(2a)+cosh(2b)) + [sinh(2b)/(cos(2a)+cosh(2b))]i
-        double twoRe = 2 * re;
-        double twoIm = 2 * im;
-        double tmp = Math.cos(twoRe) + Math.cosh(twoIm);
-        re = Math.sin(twoRe) / tmp;
-        im = Math.sinh(twoIm) / tmp;
-        return simplify(this);
+        if (re == 0) {
+            im = Math.tanh(im);
+            return this;
+        } else {
+            double twoRe = 2 * re;
+            double twoIm = 2 * im;
+            double tmp = Math.cos(twoRe) + Math.cosh(twoIm);
+            re = Math.sin(twoRe) / tmp;
+            im = Math.sinh(twoIm) / tmp;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber cot() {
         // http://mathworld.wolfram.com/Cotangent.html
         // cot(a + bi) = -sin(2a)/(cos(2a)-cosh(2b)) + [sinh(2b)/(cos(2a)-cosh(2b))]i
-        double twoRe = 2 * re;
-        double twoIm = 2 * im;
-        double tmp = Math.cos(twoRe) - Math.cosh(twoIm);
-        re = -Math.sin(twoRe) / tmp;
-        im = Math.sinh(twoIm) / tmp;
-        return simplify(this);
+        if (re == 0) {
+            double twoIm = 2 * im;
+            im = Math.sinh(twoIm) / (1 - Math.cosh(twoIm));
+            return this;
+        } else {
+            double twoRe = 2 * re;
+            double twoIm = 2 * im;
+            double tmp = Math.cos(twoRe) - Math.cosh(twoIm);
+            re = -Math.sin(twoRe) / tmp;
+            im = Math.sinh(twoIm) / tmp;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber sec() {
         // http://mathworld.wolfram.com/Secant.html
         // sec(a + bi) = (2*cos(a)cos(b))/(cos(2a)+cosh(2b)) + [(2 * sin(a)sinh(b))/(cos(2a)+cosh(2b))]i
-        double tmp = Math.cos(2 * re) + Math.cosh(2 * im);
-        double tmpRe = (2 * Math.cos(re) * Math.cosh(im)) / tmp;
-        double tmpIm = (2 * Math.sin(re) * Math.sinh(im)) / tmp;
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            BaseNumber tmp = RealNumber.get(2 * Math.cosh(im) / (1 + Math.cosh(2 * im)));
+            put(this);
+            return simplify(tmp);
+        } else {
+            double tmp = Math.cos(2 * re) + Math.cosh(2 * im);
+            double tmpRe = (2 * Math.cos(re) * Math.cosh(im)) / tmp;
+            double tmpIm = (2 * Math.sin(re) * Math.sinh(im)) / tmp;
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber csc() {
         // http://mathworld.wolfram.com/Cosecant.html
         // csc(a + bi) = -(2*sin(a)cosh(b))/(cos(2a)cosh(2b)) + [(2*cos(a)sinh(b))/(cos(2a)cosh(2b))]i
-        double tmp = Math.cos(2 * re) - Math.cosh(2 * im);
-        double tmpRe = -(2 * Math.sin(re) * Math.cosh(im)) / tmp;
-        double tmpIm = (2 * Math.cos(re) * Math.sinh(im)) / tmp;
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            im = (2 * Math.sinh(im) / (1 - Math.cosh(2 * im)));
+            return this;
+        } else {
+            double tmp = Math.cos(2 * re) - Math.cosh(2 * im);
+            double tmpRe = -(2 * Math.sin(re) * Math.cosh(im)) / tmp;
+            double tmpIm = (2 * Math.cos(re) * Math.sinh(im)) / tmp;
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
@@ -518,26 +551,31 @@ class ComplexNumber extends BaseNumber {
         // http://mathworld.wolfram.com/InverseSine.html
         // asin(z) = -i (log(sqrt(1 - z^2) + iz))
         // (1-z^2)
-        double sqRe = 1 - re * re + im * im;
-        double sqIm = - 2 * re * im;
-        // sqrt()
-        double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe, sqrtIm;
-        if (sqRe >= 0) {
-            sqrtRe = t;
-            sqrtIm = sqIm / (2 * t);
+        if (re == 0) {
+            im = Math.log(im + Math.sqrt(1 + im * im));
+            return this;
         } else {
-            sqrtRe = Math.abs(sqIm) / (2 * t);
-            sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            double sqRe = 1 - re * re + im * im;
+            double sqIm = -2 * re * im;
+            // sqrt()
+            double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
+            double sqrtRe, sqrtIm;
+            if (sqRe >= 0) {
+                sqrtRe = t;
+                sqrtIm = sqIm / (2 * t);
+            } else {
+                sqrtRe = Math.abs(sqIm) / (2 * t);
+                sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            }
+            // log(sqrt()+iz)
+            double tmpRe = -im + sqrtRe;
+            double tmpIm = re + sqrtIm;
+            double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            // -i
+            re = Math.atan2(tmpIm, tmpRe);
+            im = -logRe;
+            return simplify(this);
         }
-        // log(sqrt()+iz)
-        double tmpRe = -im + sqrtRe;
-        double tmpIm = re + sqrtIm;
-        double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        // -i
-        re = Math.atan2(tmpIm, tmpRe);
-        im = -logRe;
-        return simplify(this);
     }
 
     @Override
@@ -545,26 +583,32 @@ class ComplexNumber extends BaseNumber {
         // http://mathworld.wolfram.com/InverseCosine.html
         // acos(z) = -i (log(z + i (sqrt(1 - z^2))))
         // (1-z^2)
-        double sqRe = 1 - re * re + im * im;
-        double sqIm = - 2 * re * im;
-        // sqrt()
-        double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe, sqrtIm;
-        if (sqRe >= 0) {
-            sqrtRe = t;
-            sqrtIm = sqIm / (2 * t);
+        if (re == 0) {
+            re = M_PI2;
+            im = -Math.log(im + Math.sqrt(1 + im * im));
+            return this;
         } else {
-            sqrtRe = Math.abs(sqIm) / (2 * t);
-            sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            double sqRe = 1 - re * re + im * im;
+            double sqIm = -2 * re * im;
+            // sqrt()
+            double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
+            double sqrtRe, sqrtIm;
+            if (sqRe >= 0) {
+                sqrtRe = t;
+                sqrtIm = sqIm / (2 * t);
+            } else {
+                sqrtRe = Math.abs(sqIm) / (2 * t);
+                sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            }
+            // log(z+i*sqrt())
+            double tmpRe = re - sqrtIm;
+            double tmpIm = im + sqrtRe;
+            double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            // -i
+            re = Math.atan2(tmpIm, tmpRe);
+            im = -logRe;
+            return simplify(this);
         }
-        // log(z+i*sqrt())
-        double tmpRe = re - sqrtIm;
-        double tmpIm = im + sqrtRe;
-        double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        // -i
-        re = Math.atan2(tmpIm, tmpRe);
-        im = -logRe;
-        return simplify(this);
     }
 
     @Override
@@ -572,17 +616,31 @@ class ComplexNumber extends BaseNumber {
         // http://mathworld.wolfram.com/InverseTangent.html
         // re(atan(x + iy)) = (1/2 atan2(x, 1 - y) - 1/2 atan2(-x, 1 + y)) * (Sign of Im if Re = 0)
         // im(atan(x + iy)) = 1/4 ln(x^2 + (y + 1)^2) - 1/4 ln(x^2 + (1 - y)^2)
-        if ((re == 0) && ((im == 1) || (im == -1))) { // undefined for atan(i), atan(-i)
-            put(this);
-            return InvalidNumber.get();
-        }
+        if (re == 0) {
+            if ((im == 1) || (im == -1)) { // undefined for atan(i), atan(-i)
+                put(this);
+                return InvalidNumber.get();
+            }
 
-        double twoRe = re * re;
-        double A = 1 + im;
-        double B = 1 - im;
-        re = (0.5 * Math.atan2(re, B) - 0.5 * Math.atan2(-re, A)) * (((re == 0) && (im < 0)) ? -1 : 1);
-        im = 0.25 * Math.log(twoRe + A * A) - 0.25 * Math.log(twoRe + B * B);
-        return simplify(this);
+            if ((im > -1) && (im < 1)) {
+                im = 0.5 * Math.log(im + 1) - 0.5 * Math.log(1 - im);
+                return this;
+            }
+
+            // re = 0.25*ln((x+1)^2)-0.25*ln((1-x)^2) im=(value>0) ? -PI/2 : PI/2
+            double a = im + 1;
+            double b = 1 - im;
+            im = 0.25 * Math.log(a * a) - 0.25 * Math.log(b * b);
+            re = (im > 0) ? M_PI2 : -M_PI2;
+            return this;
+        } else {
+            double twoRe = re * re;
+            double A = 1 + im;
+            double B = 1 - im;
+            re = (0.5 * Math.atan2(re, B) - 0.5 * Math.atan2(-re, A)) * (((re == 0) && (im < 0)) ? -1 : 1);
+            im = 0.25 * Math.log(twoRe + A * A) - 0.25 * Math.log(twoRe + B * B);
+            return simplify(this);
+        }
     }
 
     @Override
@@ -590,153 +648,213 @@ class ComplexNumber extends BaseNumber {
         // http://mathworld.wolfram.com/InverseCotangent.html
         // re(acot(x + iy)) = 1/2 atan2(x/(x^2 + y^2), y/(x^2 + y^2) + 1) - 1/2 atan2(-x/(x^2 + y^2), 1 - y/(x^2 + y^2))
         // im(acot(x + iy)) = 1/4 ln((x^2)/(x^2 + y^2)^2 + (1 - y/(x^2 + y^2))^2) - 1/4 ln ((x^2)/(x^2 + y^2)^2 + (y/(x^2 + y^2) + 1)^2)
-        if ((re == 0) && ((im == -1) || (im == 1))) { // undefined for atan(i), atan(-i)
-            put (this);
-            return InvalidNumber.get();
-        }
+        if (re == 0) {
+            if ((im == -1) || (im == 1)) { // undefined for acot(i), acot(-i)
+                put(this);
+                return InvalidNumber.get();
+            }
 
-        double twoRe = re * re;
-        double pow = twoRe + im * im;
-        double len = pow * pow;
-        double A = im / pow;
-        double B = twoRe / len;
-        double C = re / pow;
-        double D = 1 + A;
-        double E = 1 - A;
-        re = 0.5 * Math.atan2(C, D) - 0.5 * Math.atan2(-C, E);
-        im = 0.25 * Math.log(B + E * E) -  0.25 * Math.log(B + D * D);
-        return simplify(this);
+            if ((im < -1) || (im > 1)) { // re=0.5*ln(1/x+1)-0.5*ln(1-1/x) im=0
+                double inv = 1 / im;
+                im = 0.5 * Math.log(1 - inv) - 0.5 * Math.log(inv + 1);
+                return this;
+            }
+
+            // re=0.25*ln((1/x+1)^2)-0.25*ln((1-1/x)^2) im=(value>0) ? -PI/2 : PI/2
+            double inv = 1 / im;
+            double a = inv + 1;
+            double b = 1 - inv;
+            re = (im > 0) ? -M_PI2 : M_PI2;
+            im = 0.25 * Math.log(b * b) - 0.25 * Math.log(a * a);
+            return this;
+        } else {
+            double twoRe = re * re;
+            double pow = twoRe + im * im;
+            double len = pow * pow;
+            double A = im / pow;
+            double B = twoRe / len;
+            double C = re / pow;
+            double D = 1 + A;
+            double E = 1 - A;
+            re = 0.5 * Math.atan2(C, D) - 0.5 * Math.atan2(-C, E);
+            im = 0.25 * Math.log(B + E * E) - 0.25 * Math.log(B + D * D);
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber asec() {
         // http://mathworld.wolfram.com/InverseSecant.html
         // asec(z) = 1/2 PI + i ln(sqrt(1 - 1/(z^2)) + i/z)
-
-        double powRe = re * re;
-        double powIm = im * im;
-        double powSum = powRe + powIm;
-        double pow2 = powSum * powSum;
-        double sqRe = powIm / pow2 - powRe / pow2 + 1;
-        double sqIm = (2 * re * im) / pow2;
-        // sqrt()
-        double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe = 0, sqrtIm = 0;
-        if (sqRe >= 0) {
-            sqrtRe = t;
-            sqrtIm = sqIm / (2 * t);
-        }/* else { //unaccessible code due to expression y^2/(x^2+y^2)-x^2(x^2+y^2)+1 is always > 0
+        if (re == 0) {
+            im = 1 / im;
+            im = Math.log(im + Math.sqrt(1 + im * im));
+            re = M_PI2;
+            return this;
+        } else {
+            double powRe = re * re;
+            double powIm = im * im;
+            double powSum = powRe + powIm;
+            double pow2 = powSum * powSum;
+            double sqRe = powIm / pow2 - powRe / pow2 + 1;
+            double sqIm = (2 * re * im) / pow2;
+            // sqrt()
+            double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
+            double sqrtRe = 0, sqrtIm = 0;
+            if (sqRe >= 0) {
+                sqrtRe = t;
+                sqrtIm = sqIm / (2 * t);
+            }/* else { //unaccessible code due to expression y^2/(x^2+y^2)-x^2(x^2+y^2)+1 is always > 0
 
             sqrtRe = Math.abs(sqIm) / (2 * t);
             sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
         }*/
-        // log(sqrt()+1/z)
-        double tmpRe = im / powSum + sqrtRe;
-        double tmpIm = re / powSum + sqrtIm;
-        double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        double logIm = Math.atan2(tmpIm, tmpRe);
-        re = M_PI2 - logIm;
-        im = logRe;
-        return simplify(this);
+            // log(sqrt()+1/z)
+            double tmpRe = im / powSum + sqrtRe;
+            double tmpIm = re / powSum + sqrtIm;
+            double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            double logIm = Math.atan2(tmpIm, tmpRe);
+            re = M_PI2 - logIm;
+            im = logRe;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber acsc() {
         // http://mathworld.wolfram.com/InverseCosecant.html
         // acsc(z) = -i ln(sqrt(1 - 1/(z^2)) + i/z)
-        double powRe = re * re;
-        double powIm = im * im;
-        double powSum = powRe + powIm;
-        double pow2 = powSum * powSum;
-        double sqRe = powIm / pow2 - powRe / pow2 + 1;
-        double sqIm = (2 * re * im) / pow2;
-        // sqrt()
-        double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe = 0, sqrtIm = 0;
-        if (sqRe >= 0) {
-            sqrtRe = t;
-            sqrtIm = sqIm / (2 * t);
-        }/* else { //unaccessible code due to expression y^2/(x^2+y^2)-x^2(x^2+y^2)+1 is always > 0
-            sqrtRe = Math.abs(sqIm) / (2 * t);
-            sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
-        }*/
-        // log(sqrt()+1/z)
-        double tmpRe = im / powSum + sqrtRe;
-        double tmpIm = re / powSum + sqrtIm;
-        double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        re = Math.atan2(tmpIm, tmpRe);
-        im = -logRe;
-        return simplify(this);
+        if (re == 0) {
+            im = 1 / im;
+            im = -Math.log(im + Math.sqrt(1 + im * im));
+            return this;
+        } else {
+            double powRe = re * re;
+            double powIm = im * im;
+            double powSum = powRe + powIm;
+            double pow2 = powSum * powSum;
+            double sqRe = powIm / pow2 - powRe / pow2 + 1;
+            double sqIm = (2 * re * im) / pow2;
+            // sqrt()
+            double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
+            double sqrtRe = 0, sqrtIm = 0;
+            if (sqRe >= 0) {
+                sqrtRe = t;
+                sqrtIm = sqIm / (2 * t);
+            }/* else { //unaccessible code due to expression y^2/(x^2+y^2)-x^2(x^2+y^2)+1 is always > 0
+                sqrtRe = Math.abs(sqIm) / (2 * t);
+                sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            }*/
+            // log(sqrt()+1/z)
+            double tmpRe = im / powSum + sqrtRe;
+            double tmpIm = re / powSum + sqrtIm;
+            double logRe = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            re = Math.atan2(tmpIm, tmpRe);
+            im = -logRe;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber sinh() {
         // http://mathworld.wolfram.com/HyperbolicSine.html
         // sinh(a + bi) = sinh(a)cos(b) + cosh(a)sin(b)i
-        double tmpRe = Math.sinh(re) * Math.cos(im);
-        double tmpIm = Math.cosh(re) * Math.sin(im);
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            im = Math.sin(im);
+            return this;
+        } else {
+            double tmpRe = Math.sinh(re) * Math.cos(im);
+            double tmpIm = Math.cosh(re) * Math.sin(im);
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber cosh() {
         // http://mathworld.wolfram.com/HyperbolicCosine.html
         // cosh(a + bi) = cosh(a)cos(b) + sinh(a)sin(b)i
-        double tmpRe = Math.cosh(re) * Math.cos(im);
-        double tmpIm = Math.sinh(re) * Math.sin(im);
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            BaseNumber tmp = RealNumber.get(Math.cos(im));
+            put(this);
+            return simplify(tmp);
+        } else {
+            double tmpRe = Math.cosh(re) * Math.cos(im);
+            double tmpIm = Math.sinh(re) * Math.sin(im);
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber tanh() {
         // http://mathworld.wolfram.com/HyperbolicTangent.html
         // tan(a + bi) = sinh(2a)/(cosh(2a)+cos(2b)) + [sin(2b)/(cosh(2a)+cos(2b))]i
-        double twoRe = 2 * re;
-        double twoIm = 2 * im;
-        double tmp = Math.cosh(twoRe) + Math.cos(twoIm);
-        re = Math.sinh(twoRe) / tmp;
-        im = Math.sin(twoIm) / tmp;
-        return simplify(this);
+        if (re == 0) {
+            im = Math.tan(im);
+            return this;
+        } else {
+            double twoRe = 2 * re;
+            double twoIm = 2 * im;
+            double tmp = Math.cosh(twoRe) + Math.cos(twoIm);
+            re = Math.sinh(twoRe) / tmp;
+            im = Math.sin(twoIm) / tmp;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber coth() {
         // http://mathworld.wolfram.com/HyperbolicCotangent.html
         // coth(a + bi) = -sinh(2a)/(cos(2b) - cosh(2a)) + [sin(2b)/(cos(2b) - cosh(2a))]i
-        double twoRe = 2 * re;
-        double twoIm = 2 * im;
-        double tmp = Math.cos(twoIm) - Math.cosh(twoRe);
-        re = -Math.sinh(twoRe) / tmp;
-        im = Math.sin(twoIm) / tmp;
-        return simplify(this);
+        if (re == 0) {
+            im = -Math.cos(im) / Math.sin(im);
+            return this;
+        } else {
+            double twoRe = 2 * re;
+            double twoIm = 2 * im;
+            double tmp = Math.cos(twoIm) - Math.cosh(twoRe);
+            re = -Math.sinh(twoRe) / tmp;
+            im = Math.sin(twoIm) / tmp;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber sech() {
         // http://mathworld.wolfram.com/HyperbolicSecant.html
         // sech(a + bi) = (2 cosh(a)cos(b))/(cosh(2a) + cos(2b)) - [(2 sinh(a)sin(b))/(cosh(2a) + cos(2b))]i
-        double tmp = Math.cosh(2 * re) + Math.cos(2 * im);
-        double tmpRe = (2 * Math.cosh(re) * Math.cos(im)) / tmp;
-        double tmpIm = -(2 * Math.sinh(re) * Math.sin(im)) / tmp;
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            BaseNumber tmp = RealNumber.get(1.0 / Math.cos(im));
+            put(this);
+            return simplify(tmp);
+        } else {
+            double tmp = Math.cosh(2 * re) + Math.cos(2 * im);
+            double tmpRe = (2 * Math.cosh(re) * Math.cos(im)) / tmp;
+            double tmpIm = -(2 * Math.sinh(re) * Math.sin(im)) / tmp;
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber csch() {
         // http://mathworld.wolfram.com/HyperbolicCosecant.html
         // csch(a + bi) = -(2 sinh(a)cos(b))/(cos(2b) - cosh(2a)) + [(2 cosh(a)sin(b))/(cos(2b) - cosh(2a))]i
-        double tmp = Math.cos(2 * im) - Math.cosh(2 * re);
-        double tmpRe = -(2 * Math.sinh(re) * Math.cos(im)) / tmp;
-        double tmpIm = (2 * Math.cosh(re) * Math.sin(im)) / tmp;
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            im = -1.0 / Math.sin(im);
+            return this;
+        } else {
+            double tmp = Math.cos(2 * im) - Math.cosh(2 * re);
+            double tmpRe = -(2 * Math.sinh(re) * Math.cos(im)) / tmp;
+            double tmpIm = (2 * Math.cosh(re) * Math.sin(im)) / tmp;
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
@@ -744,60 +862,93 @@ class ComplexNumber extends BaseNumber {
         // http://mathworld.wolfram.com/InverseHyperbolicSine.html
         // asinh(z) = ln(z + sqrt(1 + z^2))
         // 1 + z^2
-        double sqRe = re * re - im * im + 1;
-        double sqIm = 2 * re * im;
-        // sqrt()
-        double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe, sqrtIm;
-        if (sqRe >= 0) {
-            sqrtRe = t;
-            sqrtIm = sqIm / (2 * t);
+        if (re == 0) {
+            if (im > 1) {
+                re = Math.log(Math.sqrt(im * im - 1) + im);
+                im = M_PI2;
+                return this;
+            }
+            if (im < -1) {
+                re = -Math.log(Math.sqrt(im * im - 1) - im);
+                im = -M_PI2;
+                return this;
+            }
+
+            im = Math.asin(im);
+            return this;
         } else {
-            sqrtRe = Math.abs(sqIm) / (2 * t);
-            sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            double sqRe = re * re - im * im + 1;
+            double sqIm = 2 * re * im;
+            // sqrt()
+            double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
+            double sqrtRe, sqrtIm;
+            if (sqRe >= 0) {
+                sqrtRe = t;
+                sqrtIm = sqIm / (2 * t);
+            } else {
+                sqrtRe = Math.abs(sqIm) / (2 * t);
+                sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            }
+            // log()
+            double tmpRe = sqrtRe + re;
+            double tmpIm = sqrtIm + im;
+            re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            im = Math.atan2(tmpIm, tmpRe);
+            return simplify(this);
         }
-        // log()
-        double tmpRe = sqrtRe + re;
-        double tmpIm = sqrtIm + im;
-        re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        im = Math.atan2(tmpIm, tmpRe);
-        return simplify(this);
     }
 
     @Override
     public BaseNumber acosh() {
         // http://mathworld.wolfram.com/InverseHyperbolicCosine.html
         // acosh(z) = ln(z + sqrt(z + 1)sqrt(z - 1))
-        // sqrt1()
-        double sqRe = re + 1;
-        double sqIm = im;
-        double sqImPow = sqIm * sqIm;
-        double t1 = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqImPow)) / 2.0);
-        double sqrtRe1, sqrtIm1;
-        if (sqRe >= 0) {
-            sqrtRe1 = t1;
-            sqrtIm1 = sqIm / (2 * t1);
+        if (re == 0) {
+            // sqrt1()
+            double sqImPow = im * im;
+            double t1 = Math.sqrt((1 + Math.sqrt(1 + sqImPow)) / 2.0);
+            double sqrtIm1 = im / (2 * t1);
+            // sqrt2()
+            double t2 = Math.sqrt((1 + Math.sqrt(1 + sqImPow)) / 2.0);
+            double sqrtRe2 = Math.abs(im) / (2 * t2);
+            double sqrtIm2 = ((im >= 0) ? 1 : -1) * t2;
+            // log(sqrt1()*sqrt2() + z)
+            double tmpRe = t1 * sqrtRe2 - sqrtIm1 * sqrtIm2;
+            double tmpIm = t1 * sqrtIm2 + sqrtIm1 * sqrtRe2 + im;
+            re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            im = (im > 0) ? M_PI2 : -M_PI2;
+            return this;
         } else {
-            sqrtRe1 = Math.abs(sqIm) / (2 * t1);
-            sqrtIm1 = ((sqIm >= 0) ? 1 : -1) * t1;
+            // sqrt1()
+            double sqRe = re + 1;
+            double sqIm = im;
+            double sqImPow = sqIm * sqIm;
+            double t1 = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqImPow)) / 2.0);
+            double sqrtRe1, sqrtIm1;
+            if (sqRe >= 0) {
+                sqrtRe1 = t1;
+                sqrtIm1 = sqIm / (2 * t1);
+            } else {
+                sqrtRe1 = Math.abs(sqIm) / (2 * t1);
+                sqrtIm1 = ((sqIm >= 0) ? 1 : -1) * t1;
+            }
+            // sqrt2()
+            sqRe = re - 1;
+            double t2 = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqImPow)) / 2.0);
+            double sqrtRe2, sqrtIm2;
+            if (sqRe >= 0) {
+                sqrtRe2 = t2;
+                sqrtIm2 = sqIm / (2 * t2);
+            } else {
+                sqrtRe2 = Math.abs(sqIm) / (2 * t2);
+                sqrtIm2 = ((sqIm >= 0) ? 1 : -1) * t2;
+            }
+            // log(sqrt1()*sqrt2() + z)
+            double tmpRe = sqrtRe1 * sqrtRe2 - sqrtIm1 * sqrtIm2 + re;
+            double tmpIm = sqrtRe1 * sqrtIm2 + sqrtIm1 * sqrtRe2 + im;
+            re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            im = Math.atan2(tmpIm, tmpRe);
+            return simplify(this);
         }
-        // sqrt2()
-        sqRe = re - 1;
-        double t2 = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqImPow)) / 2.0);
-        double sqrtRe2, sqrtIm2;
-        if (sqRe >= 0) {
-            sqrtRe2 = t2;
-            sqrtIm2 = sqIm / (2 * t2);
-        } else {
-            sqrtRe2 = Math.abs(sqIm) / (2 * t2);
-            sqrtIm2 = ((sqIm >= 0) ? 1 : -1) * t2;
-        }
-        // log(sqrt1()*sqrt2() + z)
-        double tmpRe = sqrtRe1 * sqrtRe2 - sqrtIm1 * sqrtIm2 + re;
-        double tmpIm = sqrtRe1 * sqrtIm2 + sqrtIm1 * sqrtRe2 + im;
-        re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        im = Math.atan2(tmpIm, tmpRe);
-        return simplify(this);
     }
 
     @Override
@@ -805,14 +956,19 @@ class ComplexNumber extends BaseNumber {
         // http://mathworld.wolfram.com/InverseHyperbolicTangent.html
         // re(atanh(x + iy)) = 1/4 ln((x + 1)^2 + y^2) - 1/4 ln ((1 - x)^2 + y^2)
         // im(atanh(x + iy)) = 1/2 atan2(y, 1 + x) - 1/2 atan2(-y, 1 - x)
-        double Im2 = im * im;
-        double A = 1 + re;
-        double B = 1 - re;
-        double tmpRe = 0.25 * Math.log(A * A + Im2) - 0.25 * Math.log(B * B + Im2);
-        double tmpIm = 0.5 * Math.atan2(im, A) - 0.5 * Math.atan2(-im, B);
-        re = tmpRe;
-        im = tmpIm;
-        return simplify(this);
+        if (re == 0) {
+            im = Math.atan(im);
+            return this;
+        } else {
+            double Im2 = im * im;
+            double A = 1 + re;
+            double B = 1 - re;
+            double tmpRe = 0.25 * Math.log(A * A + Im2) - 0.25 * Math.log(B * B + Im2);
+            double tmpIm = 0.5 * Math.atan2(im, A) - 0.5 * Math.atan2(-im, B);
+            re = tmpRe;
+            im = tmpIm;
+            return simplify(this);
+        }
     }
 
     @Override
@@ -820,86 +976,129 @@ class ComplexNumber extends BaseNumber {
         // http://mathworld.wolfram.com/InverseHyperbolicCotangent.html
         // re(acoth(x + iy)) = 1/4 ln((y^2)/(x^2 + y^2)^2 + (x/(x^2 + y^2) + 1)^2) - 1/4 ln ((y^2)/(x^2 + y^2)^2 + (1 - x/(x^2 + y^2))^2)
         // im(acoth(x + iy)) = 1/2 atan2(-y/(x^2 + y^2), x/(x^2 + y^2) + 1) - 1/2 atan2(y/(x^2 + y^2), 1 - x/(x^2 + y^2))
-        double twoRe = re * re;
-        double twoIm = im * im;
-        double sum = twoRe + twoIm;
-        double pow = sum * sum;
-        double A = 1 + re / sum;
-        double B = 1 - re / sum;
-        double C = im / sum;
-        double D = twoIm / pow;
-        re = 0.25 * Math.log(D + A * A) - 0.25 * Math.log(D + B * B);
-        im = 0.5 * Math.atan2(-C, A) - 0.5 * Math.atan2(C, B);
-        return simplify(this);
+        if (re == 0) {
+            im = -Math.atan(1 / im);
+            return this;
+        } else {
+            double twoRe = re * re;
+            double twoIm = im * im;
+            double sum = twoRe + twoIm;
+            double pow = sum * sum;
+            double A = 1 + re / sum;
+            double B = 1 - re / sum;
+            double C = im / sum;
+            double D = twoIm / pow;
+            re = 0.25 * Math.log(D + A * A) - 0.25 * Math.log(D + B * B);
+            im = 0.5 * Math.atan2(-C, A) - 0.5 * Math.atan2(C, B);
+            return simplify(this);
+        }
     }
 
     @Override
     public BaseNumber asech() {
         // http://mathworld.wolfram.com/InverseHyperbolicSecant.html
         // asech(z) = ln(sqrt(1/z - 1)sqrt(1/z + 1) + 1/z)
-        double re2 = re * re;
-        double im2 = im * im;
-        double sum = re2 + im2;
-        double reDiv = re / sum;
-        double imDiv = im / sum;
-        double sqRe1 = reDiv - 1;
-        double sqIm1 = -imDiv;
-        double sqRe2 = reDiv + 1;
-        double sqIm2 = -imDiv;
-        // sqrt1()
-        double t1 = Math.sqrt((Math.abs(sqRe1) + Math.sqrt(sqRe1 * sqRe1 + sqIm1 * sqIm1)) / 2.0);
-        double sqrtRe1, sqrtIm1;
-        if (sqRe1 >= 0) {
-            sqrtRe1 = t1;
-            sqrtIm1 = sqIm1 / (2 * t1);
+        if (re == 0) {
+            double sum = im * im;
+            double imDiv = im / sum;
+            double sqIm1 = -imDiv;
+            double sqIm2 = -imDiv;
+            // sqrt1()
+            double t1 = Math.sqrt((1 + Math.sqrt(1 + sqIm1 * sqIm1)) / 2.0);
+            double sqrtRe1 = Math.abs(sqIm1) / (2 * t1);
+            double sqrtIm1 = ((sqIm1 >= 0) ? 1 : -1) * t1;
+            // sqrt2()
+            double t2 = Math.sqrt((1 + Math.sqrt(1 + sqIm2 * sqIm2)) / 2.0);
+            double sqrtIm2 = sqIm2 / (2 * t2);
+            // log()
+            double tmpRe = sqrtRe1 * t2 - sqrtIm1 * sqrtIm2;
+            double tmpIm = sqrtRe1 * sqrtIm2 + sqrtIm1 * t2 - imDiv;
+            re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            im = (im > 0) ? -M_PI2 : M_PI2;
+            return simplify(this);
         } else {
-            sqrtRe1 = Math.abs(sqIm1) / (2 * t1);
-            sqrtIm1 = ((sqIm1 >= 0) ? 1 : -1) * t1;
+            double re2 = re * re;
+            double im2 = im * im;
+            double sum = re2 + im2;
+            double reDiv = re / sum;
+            double imDiv = im / sum;
+            double sqRe1 = reDiv - 1;
+            double sqIm1 = -imDiv;
+            double sqRe2 = reDiv + 1;
+            double sqIm2 = -imDiv;
+            // sqrt1()
+            double t1 = Math.sqrt((Math.abs(sqRe1) + Math.sqrt(sqRe1 * sqRe1 + sqIm1 * sqIm1)) / 2.0);
+            double sqrtRe1, sqrtIm1;
+            if (sqRe1 >= 0) {
+                sqrtRe1 = t1;
+                sqrtIm1 = sqIm1 / (2 * t1);
+            } else {
+                sqrtRe1 = Math.abs(sqIm1) / (2 * t1);
+                sqrtIm1 = ((sqIm1 >= 0) ? 1 : -1) * t1;
+            }
+            // sqrt2()
+            double t2 = Math.sqrt((Math.abs(sqRe2) + Math.sqrt(sqRe2 * sqRe2 + sqIm2 * sqIm2)) / 2.0);
+            double sqrtRe2, sqrtIm2;
+            if (sqRe2 >= 0) {
+                sqrtRe2 = t2;
+                sqrtIm2 = sqIm2 / (2 * t2);
+            } else {
+                sqrtRe2 = Math.abs(sqIm2) / (2 * t2);
+                sqrtIm2 = ((sqIm2 >= 0) ? 1 : -1) * t2;
+            }
+            // log()
+            double tmpRe = sqrtRe1 * sqrtRe2 - sqrtIm1 * sqrtIm2 + reDiv;
+            double tmpIm = sqrtRe1 * sqrtIm2 + sqrtIm1 * sqrtRe2 - imDiv;
+            re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            im = Math.atan2(tmpIm, tmpRe);
+            return simplify(this);
         }
-        // sqrt2()
-        double t2 = Math.sqrt((Math.abs(sqRe2) + Math.sqrt(sqRe2 * sqRe2 + sqIm2 * sqIm2)) / 2.0);
-        double sqrtRe2, sqrtIm2;
-        if (sqRe2 >= 0) {
-            sqrtRe2 = t2;
-            sqrtIm2 = sqIm2 / (2 * t2);
-        } else {
-            sqrtRe2 = Math.abs(sqIm2) / (2 * t2);
-            sqrtIm2 = ((sqIm2 >= 0) ? 1 : -1) * t2;
-        }
-        // log()
-        double tmpRe = sqrtRe1 * sqrtRe2 - sqrtIm1 * sqrtIm2 + reDiv;
-        double tmpIm = sqrtRe1 * sqrtIm2 + sqrtIm1 * sqrtRe2 - imDiv;
-        re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        im = Math.atan2(tmpIm, tmpRe);
-        return simplify(this);
     }
 
     @Override
     public BaseNumber acsch() {
         // http://mathworld.wolfram.com/InverseHyperbolicCosecant.html
         // acsch(z) = ln(sqrt(1/(z^2) + 1) + 1/z)
-        double re2 = re * re;
-        double im2 = im * im;
-        double sum = re2 + im2;
-        double sum2 = sum * sum;
-        double sqRe = re2 / sum2 - im2 / sum2 + 1;
-        double sqIm = -2 * re * im / sum2;
-        // sqrt()
-        double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
-        double sqrtRe = 0, sqrtIm = 0;
-        if (sqRe >= 0) {
-            sqrtRe = t;
-            sqrtIm = sqIm / (2 * t);
-        }/* else { //unaccessible code due to expression x^2/(x^2+y^2)-y^2(x^2+y^2)+1 is always > 0
-            sqrtRe = Math.abs(sqIm) / (2 * t);
-            sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
-        }*/
-        // log()
-        double tmpRe = sqrtRe + re / sum;
-        double tmpIm = sqrtIm - im / sum;
-        re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
-        im = Math.atan2(tmpIm, tmpRe);
-        return simplify(this);
+        if (re == 0) {
+            if ((im > 0) && (im < 1)) {
+                double inv = 1 / im;
+                re = -Math.log(Math.sqrt(inv * inv - 1) + inv);
+                im = -M_PI2;
+                return this;
+            }
+            if ((im > -1) && (im < 0)) {
+                double inv = 1 / -im;
+                re = Math.log(Math.sqrt(inv * inv - 1) + inv);
+                im = M_PI2;
+                return this;
+            }
+
+            im = -Math.asin(1.0 / im);
+            return this;
+        } else {
+            double re2 = re * re;
+            double im2 = im * im;
+            double sum = re2 + im2;
+            double sum2 = sum * sum;
+            double sqRe = re2 / sum2 - im2 / sum2 + 1;
+            double sqIm = -2 * re * im / sum2;
+            // sqrt()
+            double t = Math.sqrt((Math.abs(sqRe) + Math.sqrt(sqRe * sqRe + sqIm * sqIm)) / 2.0);
+            double sqrtRe = 0, sqrtIm = 0;
+            if (sqRe >= 0) {
+                sqrtRe = t;
+                sqrtIm = sqIm / (2 * t);
+            }/* else { //unaccessible code due to expression x^2/(x^2+y^2)-y^2(x^2+y^2)+1 is always > 0
+                sqrtRe = Math.abs(sqIm) / (2 * t);
+                sqrtIm = ((sqIm >= 0) ? 1 : -1) * t;
+            }*/
+            // log()
+            double tmpRe = sqrtRe + re / sum;
+            double tmpIm = sqrtIm - im / sum;
+            re = 0.5 * Math.log(tmpRe * tmpRe + tmpIm * tmpIm);
+            im = Math.atan2(tmpIm, tmpRe);
+            return simplify(this);
+        }
     }
 
     @Override

@@ -262,8 +262,8 @@ public class ComplexNumberTest {
 
     @Test
     public void atan() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{                                  -2-3i,                                   -2+3i,                                   2-3i,                                   2+3i,                                     -3i,                                     3i, -1i,  1i }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{-1.4099210495965755-0.2290726829685388i, -1.4099210495965755+0.2290726829685388i, 1.4099210495965755-0.2290726829685388i, 1.4099210495965755+0.2290726829685388i, -1.5707963267948966-0.3465735902799727i, 1.5707963267948966+0.3465735902799727i, NaN, NaN }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{                                  -2-3i,                                   -2+3i,                                   2-3i,                                   2+3i,                                     -3i,                                     3i, -1i,  1i,                0.5i }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{-1.4099210495965755-0.2290726829685388i, -1.4099210495965755+0.2290726829685388i, 1.4099210495965755-0.2290726829685388i, 1.4099210495965755+0.2290726829685388i, -1.5707963267948966-0.3465735902799727i, 1.5707963267948966+0.3465735902799727i, NaN, NaN, 0.5493061443340548i }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.COMPLEX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).atan());
@@ -272,8 +272,8 @@ public class ComplexNumberTest {
 
     @Test
     public void acot() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{                                    -2-3i,                                    -2+3i,                                    2-3i,                                    2+3i,                  -3i,                    3i, -1i,  1i }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ -0.1608752771983211+0.22907268296853877i, -0.1608752771983211-0.22907268296853877i, 0.1608752771983211+0.22907268296853877i, 0.1608752771983211-0.22907268296853877i, 0.34657359027997265i, -0.34657359027997265i, NaN, NaN }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{                                    -2-3i,                                    -2+3i,                                    2-3i,                                    2+3i,                  -3i,                    3i, -1i,  1i,                                   0.5i }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ -0.1608752771983211+0.22907268296853877i, -0.1608752771983211-0.22907268296853877i, 0.1608752771983211+0.22907268296853877i, 0.1608752771983211-0.22907268296853877i, 0.34657359027997265i, -0.34657359027997265i, NaN, NaN, -1.570796326794897-0.5493061443340548i }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.COMPLEX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).acot());
@@ -362,8 +362,8 @@ public class ComplexNumberTest {
 
     @Test
     public void asinh() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{                                   -2-3i,                                   -2+3i,                                   2-3i,                                   2+3i,                                     -3i,                                     3i,                                2-0.5i }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ -1.9686379257930963-0.9646585044076028i, -1.9686379257930963+0.9646585044076028i, 1.9686379257930963-0.9646585044076028i, 1.9686379257930963+0.9646585044076028i, -1.7627471740390861-1.5707963267948966i, 1.7627471740390861+1.5707963267948966i, 1.465715351947291-0.2210186356228839i }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{                                   -2-3i,                                   -2+3i,                                   2-3i,                                   2+3i,                                     -3i,                                     3i,                                2-0.5i,                0.5i }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ -1.9686379257930963-0.9646585044076028i, -1.9686379257930963+0.9646585044076028i, 1.9686379257930963-0.9646585044076028i, 1.9686379257930963+0.9646585044076028i, -1.7627471740390861-1.5707963267948966i, 1.7627471740390861+1.5707963267948966i, 1.465715351947291-0.2210186356228839i, 0.5235987755982989i }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.COMPLEX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).asinh());
@@ -412,8 +412,8 @@ public class ComplexNumberTest {
 
     @Test
     public void acsch() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{                                     -2-3i,                                     -2+3i,                                     2-3i,                                     2+3i,                  -3i,                    3i }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{ -0.15735549884498543+0.22996290237720785i, -0.15735549884498543-0.22996290237720785i, 0.15735549884498543+0.22996290237720785i, 0.15735549884498543-0.22996290237720785i, 0.33983690945412194i, -0.33983690945412194i }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{                                     -2-3i,                                     -2+3i,                                     2-3i,                                     2+3i,                  -3i,                    3i,                                -0.5i,                                  0.5i }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{ -0.15735549884498543+0.22996290237720785i, -0.15735549884498543-0.22996290237720785i, 0.15735549884498543+0.22996290237720785i, 0.15735549884498543-0.22996290237720785i, 0.33983690945412194i, -0.33983690945412194i, 1.316957896924817+1.570796326794897i, -1.316957896924817-1.570796326794897i }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.COMPLEX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).acsch());
