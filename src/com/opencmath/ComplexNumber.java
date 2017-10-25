@@ -338,11 +338,11 @@ class ComplexNumber extends BaseNumber {
 
                 if (re == 0) {
                     if (integerNumber.value % 2 != 0) {
-                        im = Math.pow(im, integerNumber.value) * (im > 0 ? 1 : -1);
+                        im = -Math.pow(Math.abs(im), integerNumber.value) * Math.signum(im) * Math.signum(integerNumber.value);
                         put(exp);
                         return this;
                     } else {
-                        BaseNumber tmp = RealNumber.get(Math.pow(im, integerNumber.value) * (im > 0 ? 1 : -1));
+                        BaseNumber tmp = RealNumber.get(-Math.pow(im, integerNumber.value));
                         put(this);
                         put(exp);
                         return simplify(tmp);
