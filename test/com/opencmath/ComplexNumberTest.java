@@ -140,9 +140,9 @@ public class ComplexNumberTest {
 
     @Test
     public void pow() throws Exception {
-        ArrayList<BaseNumber> inputValues =     parseValues("{ 2+3i,   2+3i,                                    2+3i,                                     2+3i, 2+3i,                                   2+3i, 2+3i,                          2+3i }");
-        ArrayList<BaseNumber> paramValues =     parseValues("{  NaN,      2,                                     2.5,                                     2+3i,    0,                                     PI,    1,                 M2x2[0;1;2;4] }");
-        ArrayList<BaseNumber> expectedValues =  parseValues("{  NaN, -5+12i, -19.122475853735758+15.609903355777290i, 0.60756666473147822-0.30875601809790225i,    1, -56.123315905497452+3.036710450050800i, 2+3i, M2x2[1;2+3i;-5+12i;-119-120i] }");
+        ArrayList<BaseNumber> inputValues =     parseValues("{ 2+3i,   2+3i,                                    2+3i,                                     2+3i, 2+3i,                                   2+3i, 2+3i,                          2+3i, -3i, -3i,                    3i,                  3i }");
+        ArrayList<BaseNumber> paramValues =     parseValues("{  NaN,      2,                                     2.5,                                     2+3i,    0,                                     PI,    1,                 M2x2[0;1;2;4],   3,   2,                    -3,                  -2 }");
+        ArrayList<BaseNumber> expectedValues =  parseValues("{  NaN, -5+12i, -19.122475853735758+15.609903355777290i, 0.60756666473147822-0.30875601809790225i,    1, -56.123315905497452+3.036710450050800i, 2+3i, M2x2[1;2+3i;-5+12i;-119-120i], 27i,  -9, 0.037037037037037037i, 0.11111111111111111 }");
         for (int i = 0; i < expectedValues.size(); i++) {
             assertEquals(inputValues.get(i).getType(), NumberType.COMPLEX);
             compareResultAndPut(expectedValues.get(i), inputValues.get(i).pow(paramValues.get(i)));

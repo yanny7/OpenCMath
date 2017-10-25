@@ -327,10 +327,60 @@ class ComplexNumber extends BaseNumber {
                 put(exp);
                 put(this);
                 return InvalidNumber.get();
-            case INTEGER:
-            case REAL:
+            case INTEGER: {
+                IntegerNumber integerNumber = (IntegerNumber) exp;
+
+                if (integerNumber.value == 0) {
+                    put(this);
+                    integerNumber.value = 1;
+                    return integerNumber;
+                }
+
+                if (re == 0) {
+                    if (integerNumber.value % 2 != 0) {
+                        im = Math.pow(im, integerNumber.value) * (im > 0 ? 1 : -1);
+                        put(exp);
+                        return this;
+                    } else {
+                        BaseNumber tmp = RealNumber.get(Math.pow(im, integerNumber.value) * (im > 0 ? 1 : -1));
+                        put(this);
+                        put(exp);
+                        return simplify(tmp);
+                    }
+                } else {
+                    double pow = Math.pow(re * re + im * im, integerNumber.value / 2.0);
+                    double arg = integerNumber.value * Math.atan2(im, re);
+                    double tmpRe = pow * Math.cos(arg);
+                    double tmpIm = pow * Math.sin(arg);
+                    re = tmpRe;
+                    im = tmpIm;
+                    put(exp);
+                    return this;
+                }
+            }
+            case REAL: {
+                RealNumber realNumber = (RealNumber) exp;
+                double pow = Math.pow(re * re + im * im, realNumber.value / 2.0);
+                double arg = realNumber.value * Math.atan2(im, re);
+                double tmpRe = pow * Math.cos(arg);
+                double tmpIm = pow * Math.sin(arg);
+                re = tmpRe;
+                im = tmpIm;
+                put(exp);
+                return this;
+            }
+            case CONSTANT: {
+                ConstantNumber constantNumber = (ConstantNumber) exp;
+                double pow = Math.pow(re * re + im * im, constantNumber.value.value / 2.0);
+                double arg = constantNumber.value.value * Math.atan2(im, re);
+                double tmpRe = pow * Math.cos(arg);
+                double tmpIm = pow * Math.sin(arg);
+                re = tmpRe;
+                im = tmpIm;
+                put(exp);
+                return this;
+            }
             case COMPLEX:
-            case CONSTANT:
             case MATRIX:
                 return simplify(ln().mul(exp).exp());
         }
